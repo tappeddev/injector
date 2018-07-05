@@ -8,5 +8,8 @@ author: info@tikkr.app
 environment:
   sdk: '>=2.0.0-dev.52.0 <2.0.0'
 
+dependencies:
+  meta: ^1.1.5
+
 dev_dependencies:
   test: ^0.12.30
