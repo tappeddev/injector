@@ -41,5 +41,4 @@ A simple usage example:
 
 Please file feature requests and bugs at the [issue tracker][tracker].
 
-//TODO
-[tracker]: http://example.com/issues/replaceme
+[tracker]: https://github.com/tikkrapp/injector/issues
