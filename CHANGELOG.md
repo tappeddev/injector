@@ -1,3 +1,10 @@
+## 1.0.1
+
+- Upgrade pubspec.yaml (Change dart sdk constraint)
+- Update README.md
+- Update Description
+
+
 ## 1.0.0
 
 - Create package, 
