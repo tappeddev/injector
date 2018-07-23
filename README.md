@@ -1,13 +1,19 @@
-# injector
+# Injector
 
-The Dependency Injection is more a simple service locator but provides basic functionality.
+We have been using this injector in all our projects for quite a while now.
+It does not replace a complex dependency injection framework like Dagger, but it provides the basics that most apps need.
+Feature requests are welcomed !
 
-Use `registerDependency<Type>()` to register the dependency. 
-    This takes a function that gives you an instance of the injector. That way you are able to get other dependency required by your registered dependency.
+Internally the injector is a singleton that stores instances and builders in a Map.
+
+Use `registerDependency<Type>()` to register the dependency.
+Never ever try to register or get dependencies without the generic type! Dart allows it, but we don't ;)
+
+All instances are lazy loaded, meaning that at the time you request the dependency the instance is created.
+Therefore you are registering a builder function that hands you a injector that you HAVE TO USE when getting child dependencies.  
     
-    Get your dependency using `getDependency<Type>()`. 
-    
-    __Never ever try to register or get dependencies without the generic type! Dart allows it, but we don't ;)__
+Get your dependency using `getDependency<Type>()`. 
+
     
 
 ## Usage
