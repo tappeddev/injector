@@ -10,6 +10,5 @@ pubspec.lock
 doc/api/
 
 # Directory created by IntelliJ
-**/.idea/
-.idea/
+.idea
 
