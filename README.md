@@ -2,7 +2,7 @@
 
 We have been using this injector in all our projects for quite a while now.
 It does not replace a complex dependency injection framework like Dagger, but it provides the basics that most apps need.
-Feature requests are welcomed !
+Feature requests are welcomed!
 
 Internally the injector is a singleton that stores instances and builders in a Map.
 
@@ -20,7 +20,7 @@ Get your dependency using `getDependency<Type>()`.
 
 A simple usage example:
 
-    ///Register a dependency (Every time a new instance)
+    // Register a dependency (Every time a new instance)
     injector.registerDependency<Car>((injector) {
           var engine = injector.getDependency<Engine>();
           var fuel = injector.getDependency<Fuel>();
@@ -29,7 +29,7 @@ A simple usage example:
           return CarImpl(engine,fuel,driver);
         });
         
-    ///Register a singleton
+    // Register a singleton
      injector.registerSingleton<Car>((injector) {
               var engine = injector.getDependency<Engine>();
               var fuel = injector.getDependency<Fuel>();
@@ -38,7 +38,7 @@ A simple usage example:
               return CarImpl(engine,fuel,driver);
             });
         
-    //Register your dependencies / singletons in the  __main.dart__ file
+    // Register your dependencies / singletons in the  __main.dart__ file
     
 
 
