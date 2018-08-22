@@ -27,12 +27,13 @@ void main() {
 
     Car car = injector.getDependency<Car>();
 
-    expect(isNotNull, car);
-    expect(true, car.drive());
-    expect(true, car.stop());
+    expect(car, isNotNull);
+    expect(car.drive(), true);
+    expect(car.stop(), true);
   });
 
   test('Register singleton / Get singleton - Test', () {
+    injector.clearDependencies();
     injector.registerDependency<Fuel>((_) => Fuel());
 
     injector.registerDependency<Driver>((_) => Driver());
@@ -43,7 +44,6 @@ void main() {
       var fuel = injector.getDependency<Fuel>();
       var driver = injector.getDependency<Driver>();
       var engine = injector.getDependency<Engine>();
-
       return CarImpl(driver: driver, engine: engine, fuel: fuel);
     });
 
@@ -51,6 +51,6 @@ void main() {
 
     Car singleTonCar2 = injector.getDependency<Car>();
 
-    expect(true, singleTonCar1 == singleTonCar2);
+    expect(singleTonCar1 == singleTonCar2, true);
   });
 }
