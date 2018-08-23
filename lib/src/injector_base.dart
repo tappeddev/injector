@@ -37,7 +37,7 @@ class Injector {
           "No type specified !\nCan not register dependencies for type \"$type\"");
     }
 
-    if (_singletonMap.containsKey(type)) {
+    if (_singletonMap.containsKey(type) || _factoryMap.containsKey(type)) {
       throw Exception("type \"$type\" already defined !");
     }
 
