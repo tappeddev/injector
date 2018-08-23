@@ -8,6 +8,7 @@ void main() {
 
   setUp(() {
     injector = Injector();
+    injector.clearDependencies();
   });
 
   test('Register dependency / Get dependency - Test', () {
@@ -50,7 +51,7 @@ void main() {
     Car singleTonCar1 = injector.getDependency<Car>();
 
     Car singleTonCar2 = injector.getDependency<Car>();
-
-    expect(singleTonCar1 == singleTonCar2, true);
+    
+    expect(singleTonCar1, singleTonCar2);
   });
 }
