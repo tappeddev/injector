@@ -34,7 +34,6 @@ void main() {
   });
 
   test('Register singleton / Get singleton - Test', () {
-    injector.clearDependencies();
     injector.registerDependency<Fuel>((_) => Fuel());
 
     injector.registerDependency<Driver>((_) => Driver());
