@@ -1,4 +1,5 @@
 import 'package:injector/injector.dart';
+import 'package:injector/src/exception/cycle_dependency_exception.dart';
 import 'package:test/test.dart';
 
 import 'test_classes.dart';
@@ -53,5 +54,23 @@ void main() {
     Car singleTonCar2 = injector.getDependency<Car>();
 
     expect(singleTonCar1, singleTonCar2);
+  });
+
+  test('Detects Cylce dependencies', () {
+    injector.registerDependency<Fuel>((injector) {
+      injector.getDependency<Driver>();
+      return Fuel();
+    });
+
+    injector.registerDependency<Driver>((injector) {
+      injector.getDependency<Fuel>();
+      return Driver();
+    });
+
+    try {
+      injector.getDependency<Fuel>();
+    } on Exception catch (e) {
+      expect(e, CycleDependencyException);
+    }
   });
 }

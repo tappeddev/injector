@@ -1,0 +1,1 @@
+class CycleDependencyException implements Exception {}
