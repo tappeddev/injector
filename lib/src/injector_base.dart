@@ -56,7 +56,7 @@ class Injector {
     var factoryId = factory.hashCode;
 
     if (_factoryCallIds.contains(factoryId))
-      throw CircularDependencyException();
+      throw CircularDependencyException(type: T.toString());
 
     _factoryCallIds.add(factoryId);
 
