@@ -1,3 +1,8 @@
+## 1.0.1.1
+
+- Upgrade analysis_options.yaml
+- Add missing Cast ("as T")
+
 ## 1.0.1
 
 - Upgrade pubspec.yaml (Change dart sdk constraint)
