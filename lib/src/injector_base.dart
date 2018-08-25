@@ -41,7 +41,6 @@ class Injector {
   /// A circular dependency is detected when the factory id was not removed
   /// meaning that the instance was not created
   /// but the same factory was called more than once
-
   var _factoryCallIds = List<int>();
 
   T getDependency<T>() {
