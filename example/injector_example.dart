@@ -56,7 +56,7 @@ class TikkrDatabase extends Database {
   }
 }
 
-main() {
+void main() {
   Injector injector = Injector();
 
   //Register a dependency
@@ -78,7 +78,7 @@ class WebView {
 
   WebView() {
     Injector injector = Injector();
-    this.database = injector.getDependency<Database>();
-    this.customerCar = injector.getDependency<Car>();
+    database = injector.getDependency<Database>();
+    customerCar = injector.getDependency<Car>();
   }
 }

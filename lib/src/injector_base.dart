@@ -62,7 +62,7 @@ class Injector {
       return builder(this) as T;
     } else {
       if (_singletonMap.containsKey(type)) {
-        return _singletonMap[type];
+        return _singletonMap[type] as T;
       } else {
         var builder = _singletonFactoryMap[type];
         return _singletonMap[type] = builder(this) as T;
