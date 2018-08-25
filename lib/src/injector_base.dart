@@ -31,7 +31,7 @@ class Injector {
       throw Exception("type \"$type\" already defined !");
     }
 
-    _factoryMap[type] = SingletonFactory(builder, this);
+    _factoryMap[type] = SingletonFactory<T>(builder, this);
   }
 
   /// Whenever a factory is called to get a dependency
@@ -75,5 +75,8 @@ class Injector {
     }
   }
 
-  void clearDependencies() => _factoryMap.clear();
+  void clearDependencies() {
+    _factoryCallIds.clear();
+    _factoryMap.clear();
+  }
 }
