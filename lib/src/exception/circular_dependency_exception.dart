@@ -1,0 +1,1 @@
+class CircularDependencyException implements Exception {}

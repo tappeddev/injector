@@ -1,5 +1,5 @@
 import 'package:injector/injector.dart';
-import 'package:injector/src/exception/cycle_dependency_exception.dart';
+import 'package:injector/src/exception/circular_dependency_exception.dart';
 import 'package:test/test.dart';
 
 import 'test_classes.dart';
@@ -57,12 +57,19 @@ void main() {
   });
 
   test('Detects Cylce dependencies', () {
+    injector.registerDependency<Engine>((_) => Engine());
+
     injector.registerDependency<Fuel>((injector) {
+      injector.getDependency<Engine>();
+
+      // this will trigger the cycle
+      // since Fuel requires Driver and Driver requires Fuel
       injector.getDependency<Driver>();
       return Fuel();
     });
 
     injector.registerDependency<Driver>((injector) {
+      injector.getDependency<Engine>();
       injector.getDependency<Fuel>();
       return Driver();
     });
@@ -70,7 +77,7 @@ void main() {
     try {
       injector.getDependency<Fuel>();
     } on Exception catch (e) {
-      expect(e, CycleDependencyException);
+      expect(e, TypeMatcher<CircularDependencyException>());
     }
   });
 }
