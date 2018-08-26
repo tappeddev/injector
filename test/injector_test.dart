@@ -55,7 +55,7 @@ void main() {
     expect(singleTonCar1, singleTonCar2);
   });
 
-  test('Register 2 classes with the same Name - Test', () {
+  test('Register two classes with the same name from different packages - Test', () {
     injector.registerDependency<Engine>((_) => Engine());
 
     injector.registerDependency<test2.Engine>((_) => test2.Engine());
