@@ -59,11 +59,11 @@ class Injector {
     if (_dependencyFactoryMap.containsKey(hashCode)) {
       var builder = _dependencyFactoryMap[hashCode];
       return builder(this) as T;
+    } else if (_singletonMap.containsKey(hashCode)) {
+      return _singletonMap[hashCode] as T;
     } else if (_singletonFactoryMap.containsKey(hashCode)) {
       var builder = _singletonFactoryMap[hashCode];
       return _singletonMap[hashCode] = builder(this) as T;
-    } else if (_singletonMap.containsKey(hashCode)) {
-      return _singletonMap[hashCode] as T;
     } else {
       throw Exception("Dependency with type \"$T\" not registered !");
     }

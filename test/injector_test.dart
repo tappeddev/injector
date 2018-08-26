@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:injector/injector.dart';
 import 'package:test/test.dart';
 
@@ -43,11 +44,11 @@ void main() {
   });
 
   test('Register singleton / Get singleton - Test', () {
-    injector.registerDependency<Fuel>((_) => Fuel());
+    injector.registerSingleton<Fuel>((_) => Fuel());
 
-    injector.registerDependency<Driver>((_) => Driver());
+    injector.registerSingleton<Driver>((_) => Driver());
 
-    injector.registerDependency<Engine>((_) => Engine());
+    injector.registerSingleton<Engine>((_) => Engine());
 
     injector.registerSingleton<Car>((Injector injector) {
       var fuel = injector.getDependency<Fuel>();
@@ -63,7 +64,8 @@ void main() {
     expect(singleTonCar1, equals(singleTonCar2));
   });
 
-  test('Register two classes with the same name from different packages - Test', () {
+  test('Register two classes with the same name from different packages - Test',
+      () {
     injector.registerDependency<Engine>((_) => Engine());
 
     injector.registerDependency<test2.Engine>((_) => test2.Engine());
