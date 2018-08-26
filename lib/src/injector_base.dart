@@ -41,35 +41,31 @@ class Injector {
           "No type specified !\nCan not register dependencies for type \"$T\"");
     }
 
-    if (_singletonMap.containsKey(hashcode) ||
+    if (_singletonFactoryMap.containsKey(hashcode) ||
         _dependencyFactoryMap.containsKey(hashcode)) {
-      throw Exception("type \"$hashcode\" already defined !");
+      throw Exception("type \"${T.toString()}\" already defined !");
     }
 
     return true;
   }
 
   T getDependency<T>() {
-    var key = T.hashCode;
+    var hashCode = T.hashCode;
 
     if (T == dynamic) {
       throw Exception("Can not get dependencies for type \"$T\"");
     }
 
-    if (!_dependencyFactoryMap.containsKey(key) &&
-        !_singletonMap.containsKey(key) &&
-        !_singletonFactoryMap.containsKey(key)) {
-      throw Exception("Dependency with type \"$T\" not registered !");
-    }
-
-    if (_dependencyFactoryMap.containsKey(key)) {
-      var builder = _dependencyFactoryMap[key];
+    if (_dependencyFactoryMap.containsKey(hashCode)) {
+      var builder = _dependencyFactoryMap[hashCode];
       return builder(this) as T;
-    } else if (_singletonFactoryMap.containsKey(key)) {
-      var builder = _singletonFactoryMap[key];
-      return _singletonMap[key] = builder(this) as T;
-    } else if (_singletonMap.containsKey(key)) {
-      return _singletonMap[key] as T;
+    } else if (_singletonFactoryMap.containsKey(hashCode)) {
+      var builder = _singletonFactoryMap[hashCode];
+      return _singletonMap[hashCode] = builder(this) as T;
+    } else if (_singletonMap.containsKey(hashCode)) {
+      return _singletonMap[hashCode] as T;
+    } else {
+      throw Exception("Dependency with type \"$T\" not registered !");
     }
   }
 
