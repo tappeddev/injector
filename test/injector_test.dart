@@ -34,6 +34,14 @@ void main() {
     expect(car.stop(), true);
   });
 
+  test("Get a not registered Dependency", () {
+    try {
+      injector.getDependency<Fuel>();
+    } on Exception catch (e) {
+      expect(e, TypeMatcher<Exception>());
+    }
+  });
+
   test('Register singleton / Get singleton - Test', () {
     injector.registerDependency<Fuel>((_) => Fuel());
 
@@ -52,7 +60,7 @@ void main() {
 
     Car singleTonCar2 = injector.getDependency<Car>();
 
-    expect(singleTonCar1, singleTonCar2);
+    expect(singleTonCar1, equals(singleTonCar2));
   });
 
   test('Register 2 classes with the same Name - Test', () {
