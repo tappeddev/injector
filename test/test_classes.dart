@@ -12,9 +12,8 @@ class Driver {
   String name = "Max";
 }
 
-abstract class Car {
+abstract class  Car {
   bool drive();
-
   bool stop();
 }
 

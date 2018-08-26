@@ -44,14 +44,13 @@ void main() {
       var fuel = injector.getDependency<Fuel>();
       var driver = injector.getDependency<Driver>();
       var engine = injector.getDependency<Engine>();
-
       return CarImpl(driver: driver, engine: engine, fuel: fuel);
     });
 
     Car singleTonCar1 = injector.getDependency<Car>();
 
     Car singleTonCar2 = injector.getDependency<Car>();
-
+    
     expect(singleTonCar1, singleTonCar2);
   });
 }
