@@ -14,7 +14,6 @@ class Driver {
 
 abstract class Car {
   bool drive();
-
   bool stop();
 }
 

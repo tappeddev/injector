@@ -1,7 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:injector/injector.dart';
 import 'package:test/test.dart';
 
 import 'test_classes.dart';
+import 'test_classes_2.dart' as test2;
 
 void main() {
   Injector injector;
@@ -33,18 +35,25 @@ void main() {
     expect(car.stop(), true);
   });
 
+  test("Get a not registered Dependency", () {
+    try {
+      injector.getDependency<Fuel>();
+    } on Exception catch (e) {
+      expect(e, TypeMatcher<Exception>());
+    }
+  });
+
   test('Register singleton / Get singleton - Test', () {
-    injector.registerDependency<Fuel>((_) => Fuel());
+    injector.registerSingleton<Fuel>((_) => Fuel());
 
-    injector.registerDependency<Driver>((_) => Driver());
+    injector.registerSingleton<Driver>((_) => Driver());
 
-    injector.registerDependency<Engine>((_) => Engine());
+    injector.registerSingleton<Engine>((_) => Engine());
 
     injector.registerSingleton<Car>((Injector injector) {
       var fuel = injector.getDependency<Fuel>();
       var driver = injector.getDependency<Driver>();
       var engine = injector.getDependency<Engine>();
-
       return CarImpl(driver: driver, engine: engine, fuel: fuel);
     });
 
@@ -52,6 +61,19 @@ void main() {
 
     Car singleTonCar2 = injector.getDependency<Car>();
 
-    expect(singleTonCar1, singleTonCar2);
+    expect(singleTonCar1, equals(singleTonCar2));
+  });
+
+  test('Register two classes with the same name from different packages - Test',
+      () {
+    injector.registerDependency<Engine>((_) => Engine());
+
+    injector.registerDependency<test2.Engine>((_) => test2.Engine());
+
+    var engine1 = injector.getDependency<Engine>();
+
+    var engine2 = injector.getDependency<test2.Engine>();
+
+    expect(engine1, isNot(engine2));
   });
 }

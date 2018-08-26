@@ -9,69 +9,69 @@ class Injector {
 
   Injector._internal();
 
-  Map<String, Factory> _factoryMap = Map<String, Factory>();
+  Map<int, Factory> _dependencyFactoryMap = Map<int, Factory>();
 
-  Map<String, Factory> _singletonFactoryMap = Map<String, Factory>();
-  Map<String, Object> _singletonMap = Map<String, Object>();
+  Map<int, Factory> _singletonFactoryMap = Map<int, Factory>();
+
+  Map<int, Object> _singletonMap = Map<int, Object>();
 
   void registerDependency<T>(Factory<T> factory) {
-    String type = T.toString();
+    int hashcode = T.hashCode;
 
-    if (T == dynamic) {
-      throw Exception(
-          "No type specified !\nCan not register dependencies for type \"$type\"");
+    bool isValid = _isRegistrationValid<T>(hashcode);
+
+    if (isValid) {
+      _dependencyFactoryMap[hashcode] = factory;
     }
-
-    if (_singletonMap.containsKey(type)) {
-      throw Exception("type \"$type\" already defined !");
-    }
-
-    _factoryMap[type] = factory;
   }
 
   void registerSingleton<T>(Factory<T> factory) {
-    String type = T.toString();
+    int hashCode = T.hashCode;
 
+    bool isValid = _isRegistrationValid<T>(hashCode);
+
+    if (isValid) {
+      _singletonFactoryMap[hashCode] = factory;
+    }
+  }
+
+  bool _isRegistrationValid<T>(int hashcode) {
     if (T == dynamic) {
       throw Exception(
-          "No type specified !\nCan not register dependencies for type \"$type\"");
+          "No type specified !\nCan not register dependencies for type \"$T\"");
     }
 
-    if (_singletonMap.containsKey(type) || _factoryMap.containsKey(type)) {
-      throw Exception("type \"$type\" already defined !");
+    if (_singletonFactoryMap.containsKey(hashcode) ||
+        _dependencyFactoryMap.containsKey(hashcode)) {
+      throw Exception("type \"${T.toString()}\" already defined !");
     }
 
-    _singletonFactoryMap[type] = factory;
+    return true;
   }
 
   T getDependency<T>() {
-    var type = T.toString();
+    var hashCode = T.hashCode;
 
     if (T == dynamic) {
-      throw Exception("Can not get dependencies for type \"$type\"");
+      throw Exception("Can not get dependencies for type \"$T\"");
     }
 
-    if (!_factoryMap.containsKey(type) &&
-        !_singletonMap.containsKey(type) &&
-        !_singletonFactoryMap.containsKey(type)) {
-      throw Exception("Dependency with type \"$type\" not registered !");
-    }
-
-    if (_factoryMap.containsKey(type)) {
-      var builder = _factoryMap[type];
+    if (_dependencyFactoryMap.containsKey(hashCode)) {
+      var builder = _dependencyFactoryMap[hashCode];
       return builder(this) as T;
+    } else if (_singletonMap.containsKey(hashCode)) {
+      return _singletonMap[hashCode] as T;
+    } else if (_singletonFactoryMap.containsKey(hashCode)) {
+      var builder = _singletonFactoryMap[hashCode];
+      return _singletonMap[hashCode] = builder(this) as T;
     } else {
-      if (_singletonMap.containsKey(type)) {
-        return _singletonMap[type] as T;
-      } else {
-        var builder = _singletonFactoryMap[type];
-        return _singletonMap[type] = builder(this) as T;
-      }
+      throw Exception("Dependency with type \"$T\" not registered !");
     }
   }
 
   void clearDependencies() {
-    _factoryMap.clear();
+    _dependencyFactoryMap.clear();
     _singletonMap.clear();
+    _singletonFactoryMap.clear();
   }
 }
