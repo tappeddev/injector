@@ -2,6 +2,7 @@ import 'package:injector/injector.dart';
 import 'package:test/test.dart';
 
 import 'test_classes.dart';
+import 'test_classes_2.dart' as test2;
 
 void main() {
   Injector injector;
@@ -50,7 +51,19 @@ void main() {
     Car singleTonCar1 = injector.getDependency<Car>();
 
     Car singleTonCar2 = injector.getDependency<Car>();
-    
+
     expect(singleTonCar1, singleTonCar2);
+  });
+
+  test('Register 2 classes with the same Name - Test', () {
+    injector.registerDependency<Engine>((_) => Engine());
+
+    injector.registerDependency<test2.Engine>((_) => test2.Engine());
+
+    var engine1 = injector.getDependency<Engine>();
+
+    var engine2 = injector.getDependency<test2.Engine>();
+
+    expect(engine1, isNot(engine2));
   });
 }

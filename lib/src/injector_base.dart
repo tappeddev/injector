@@ -9,40 +9,44 @@ class Injector {
 
   Injector._internal();
 
-  Map<int, Factory> _factoryMap = Map<int, Factory>();
+  Map<int, Factory> _dependencyFactoryMap = Map<int, Factory>();
 
   Map<int, Factory> _singletonFactoryMap = Map<int, Factory>();
 
   Map<int, Object> _singletonMap = Map<int, Object>();
 
   void registerDependency<T>(Factory<T> factory) {
-    int key = T.hashCode;
+    int hashcode = T.hashCode;
 
-    if (T == dynamic) {
-      throw Exception(
-          "No type specified !\nCan not register dependencies for type \"$T\"");
+    bool isValid = _isRegistrationValid<T>(hashcode);
+
+    if (isValid) {
+      _dependencyFactoryMap[hashcode] = factory;
     }
-
-    if (_singletonMap.containsKey(key)) {
-      throw Exception("type \"$T\" already defined !");
-    }
-
-    _factoryMap[key] = factory;
   }
 
   void registerSingleton<T>(Factory<T> factory) {
-    int key = T.hashCode;
+    int hashCode = T.hashCode;
 
+    bool isValid = _isRegistrationValid<T>(hashCode);
+
+    if (isValid) {
+      _singletonFactoryMap[hashCode] = factory;
+    }
+  }
+
+  bool _isRegistrationValid<T>(int hashcode) {
     if (T == dynamic) {
       throw Exception(
           "No type specified !\nCan not register dependencies for type \"$T\"");
     }
 
-    if (_singletonMap.containsKey(key) || _factoryMap.containsKey(type)) {
-      throw Exception("type \"$type\" already defined !");
+    if (_singletonMap.containsKey(hashcode) ||
+        _dependencyFactoryMap.containsKey(hashcode)) {
+      throw Exception("type \"$hashcode\" already defined !");
     }
 
-    _singletonFactoryMap[key] = factory;
+    return true;
   }
 
   T getDependency<T>() {
@@ -52,29 +56,26 @@ class Injector {
       throw Exception("Can not get dependencies for type \"$T\"");
     }
 
-    if (!_factoryMap.containsKey(key) &&
+    if (!_dependencyFactoryMap.containsKey(key) &&
         !_singletonMap.containsKey(key) &&
         !_singletonFactoryMap.containsKey(key)) {
       throw Exception("Dependency with type \"$T\" not registered !");
     }
 
-    if (_factoryMap.containsKey(key)) {
-      var builder = _factoryMap[key];
+    if (_dependencyFactoryMap.containsKey(key)) {
+      var builder = _dependencyFactoryMap[key];
       return builder(this) as T;
-    } else {
-      if (_singletonMap.containsKey(key)) {
-        return _singletonMap[key];
-      if (_singletonMap.containsKey(type)) {
-        return _singletonMap[type] as T;
-      } else {
-        var builder = _singletonFactoryMap[key];
-        return _singletonMap[key] = builder(this) as T;
-      }
+    } else if (_singletonFactoryMap.containsKey(key)) {
+      var builder = _singletonFactoryMap[key];
+      return _singletonMap[key] = builder(this) as T;
+    } else if (_singletonMap.containsKey(key)) {
+      return _singletonMap[key] as T;
     }
   }
 
   void clearDependencies() {
-    _factoryMap.clear();
+    _dependencyFactoryMap.clear();
     _singletonMap.clear();
+    _singletonFactoryMap.clear();
   }
 }
