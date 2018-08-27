@@ -36,7 +36,8 @@ void main() {
     expect(car.stop(), true);
   });
 
-  /*test("Get a not registered Dependency", () {
+  test("Throw a Ecxeption - If you try  to get a not registered Dependency",
+      () {
     try {
       injector.getDependency<Fuel>();
     } on Exception catch (e) {
@@ -101,5 +102,5 @@ void main() {
     } on Exception catch (e) {
       expect(e, TypeMatcher<CircularDependencyException>());
     }
-  });*/
+  });
 }

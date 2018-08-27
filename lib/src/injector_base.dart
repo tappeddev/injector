@@ -16,13 +16,9 @@ class Injector {
   void registerDependency<T>(Builder<T> builder) {
     int identity = _getIdentity(T);
 
-    _checkType(T);
+    _checkValidation(T);
 
     _checkForDuplicates<T>(identity);
-
-    if (_factoryMap.keys.contains(identity)) {
-      throw AlreadyDefinedException(type: T.toString());
-    }
 
     _factoryMap[identity] = ProviderFactory<T>(builder, this);
   }
@@ -30,7 +26,7 @@ class Injector {
   void registerSingleton<T>(Builder<T> builder) {
     int identity = _getIdentity(T);
 
-    _checkType(T);
+    _checkValidation(T);
 
     _checkForDuplicates<T>(identity);
 
@@ -49,7 +45,7 @@ class Injector {
   T getDependency<T>() {
     int identity = _getIdentity(T);
 
-    _checkType(T);
+    _checkValidation(T);
 
     var factory = _factoryMap[identity];
     var factoryId = factory.hashCode;
@@ -66,7 +62,7 @@ class Injector {
     return instance;
   }
 
-  void _checkType<T>(T type) {
+  void _checkValidation<T>(T type) {
     var type = T.toString();
 
     if (T == dynamic) {
@@ -76,7 +72,7 @@ class Injector {
   }
 
   void _checkForDuplicates<T>(int identity) {
-    if (_factoryMap.keys.contains(identity)) {
+    if (_factoryMap.containsKey(identity)) {
       throw AlreadyDefinedException(type: T.toString());
     }
   }
