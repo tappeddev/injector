@@ -36,8 +36,7 @@ void main() {
     expect(car.stop(), true);
   });
 
-  test("Throw a Ecxeption - If you try  to get a not registered Dependency",
-      () {
+  test("Ecxeption - A not registered Dependency", () {
     try {
       injector.getDependency<Fuel>();
     } on Exception catch (e) {

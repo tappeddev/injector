@@ -1,5 +1,6 @@
 import 'package:injector/src/exception/already_defined_exception.dart';
 import 'package:injector/src/exception/circular_dependency_exception.dart';
+import 'package:injector/src/exception/not_defined_exception.dart';
 import 'package:injector/src/factory/factory.dart';
 import 'package:injector/src/factory/provider_factory.dart';
 import 'package:injector/src/factory/singelton_factory.dart';
@@ -14,9 +15,9 @@ class Injector {
   Map<int, Factory<dynamic>> _factoryMap = Map<int, Factory>();
 
   void registerDependency<T>(Builder<T> builder) {
-    int identity = _getIdentity(T);
+    int identity = _getIdentity<T>();
 
-    _checkValidation(T);
+    _checkValidation<T>();
 
     _checkForDuplicates<T>(identity);
 
@@ -24,9 +25,9 @@ class Injector {
   }
 
   void registerSingleton<T>(Builder<T> builder) {
-    int identity = _getIdentity(T);
+    int identity = _getIdentity<T>();
 
-    _checkValidation(T);
+    _checkValidation<T>();
 
     _checkForDuplicates<T>(identity);
 
@@ -43,9 +44,13 @@ class Injector {
   var _factoryCallIds = List<int>();
 
   T getDependency<T>() {
-    int identity = _getIdentity(T);
+    int identity = _getIdentity<T>();
 
-    _checkValidation(T);
+    _checkValidation<T>();
+
+    if (!_factoryMap.containsKey(identity)) {
+      throw NotDefinedException(type: T.toString());
+    }
 
     var factory = _factoryMap[identity];
     var factoryId = factory.hashCode;
@@ -62,7 +67,7 @@ class Injector {
     return instance;
   }
 
-  void _checkValidation<T>(T type) {
+  void _checkValidation<T>() {
     var type = T.toString();
 
     if (T == dynamic) {
@@ -77,7 +82,7 @@ class Injector {
     }
   }
 
-  int _getIdentity<T>(T type) => T.hashCode;
+  int _getIdentity<T>() => T.hashCode;
 
   void clearDependencies() {
     _factoryCallIds.clear();
