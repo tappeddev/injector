@@ -1,3 +1,4 @@
+import 'package:injector/src/exception/already_defined_exception.dart';
 import 'package:injector/src/exception/circular_dependency_exception.dart';
 import 'package:injector/src/factory/factory.dart';
 import 'package:injector/src/factory/provider_factory.dart';
@@ -10,28 +11,30 @@ class Injector {
 
   Injector._internal();
 
-  Map<String, Factory<dynamic>> _factoryMap = Map<String, Factory>();
+  Map<int, Factory<dynamic>> _factoryMap = Map<int, Factory>();
 
   void registerDependency<T>(Builder<T> builder) {
-    var type = T.toString();
-    _assertType(T);
+    int identity = _getIdentity(T);
 
-    if (_factoryMap.containsKey(type)) {
-      throw Exception("type \"$type\" already defined !");
+    _checkType(T);
+
+    _checkForDuplicates<T>(identity);
+
+    if (_factoryMap.keys.contains(identity)) {
+      throw AlreadyDefinedException(type: T.toString());
     }
 
-    _factoryMap[type] = ProviderFactory<T>(builder, this);
+    _factoryMap[identity] = ProviderFactory<T>(builder, this);
   }
 
   void registerSingleton<T>(Builder<T> builder) {
-    var type = T.toString();
-    _assertType(T);
+    int identity = _getIdentity(T);
 
-    if (_factoryMap.containsKey(type)) {
-      throw Exception("type \"$type\" already defined !");
-    }
+    _checkType(T);
 
-    _factoryMap[type] = SingletonFactory<T>(builder, this);
+    _checkForDuplicates<T>(identity);
+
+    _factoryMap[identity] = SingletonFactory<T>(builder, this);
   }
 
   /// Whenever a factory is called to get a dependency
@@ -44,18 +47,16 @@ class Injector {
   var _factoryCallIds = List<int>();
 
   T getDependency<T>() {
-    var type = T.toString();
-    _assertType(T);
+    int identity = _getIdentity(T);
 
-    if (!_factoryMap.containsKey(type)) {
-      throw Exception("Dependency with type $type not registered");
-    }
+    _checkType(T);
 
-    var factory = _factoryMap[type];
+    var factory = _factoryMap[identity];
     var factoryId = factory.hashCode;
 
-    if (_factoryCallIds.contains(factoryId))
+    if (_factoryCallIds.contains(factoryId)) {
       throw CircularDependencyException(type: T.toString());
+    }
 
     _factoryCallIds.add(factoryId);
 
@@ -65,7 +66,7 @@ class Injector {
     return instance;
   }
 
-  void _assertType<T>(T type) {
+  void _checkType<T>(T type) {
     var type = T.toString();
 
     if (T == dynamic) {
@@ -73,6 +74,14 @@ class Injector {
           "No type specified !\nCan not register dependencies for type \"$type\"");
     }
   }
+
+  void _checkForDuplicates<T>(int identity) {
+    if (_factoryMap.keys.contains(identity)) {
+      throw AlreadyDefinedException(type: T.toString());
+    }
+  }
+
+  int _getIdentity<T>(T type) => T.hashCode;
 
   void clearDependencies() {
     _factoryCallIds.clear();
