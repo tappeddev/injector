@@ -1,7 +1,8 @@
-## 1.0.1.1
+## 1.0.2
 
 - Upgrade analysis_options.yaml
 - Add missing Cast ("as T")
+- Add Test - Cycle dependencies
 
 ## 1.0.1
 
