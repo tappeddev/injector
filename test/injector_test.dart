@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:injector/injector.dart';
+import 'package:injector/src/exception/circular_dependency_exception.dart';
 import 'package:test/test.dart';
 
 import 'test_classes.dart';
@@ -35,7 +36,7 @@ void main() {
     expect(car.stop(), true);
   });
 
-  test("Get a not registered Dependency", () {
+  test("Ecxeption - A not registered Dependency", () {
     try {
       injector.getDependency<Fuel>();
     } on Exception catch (e) {
@@ -75,5 +76,30 @@ void main() {
     var engine2 = injector.getDependency<test2.Engine>();
 
     expect(engine1, isNot(engine2));
+  });
+
+  test('Detects Cylce dependencies', () {
+    injector.registerDependency<Engine>((_) => Engine());
+
+    injector.registerDependency<Fuel>((injector) {
+      injector.getDependency<Engine>();
+
+      // this will trigger the cycle
+      // since Fuel requires Driver and Driver requires Fuel
+      injector.getDependency<Driver>();
+      return Fuel();
+    });
+
+    injector.registerDependency<Driver>((injector) {
+      injector.getDependency<Engine>();
+      injector.getDependency<Fuel>();
+      return Driver();
+    });
+
+    try {
+      injector.getDependency<Fuel>();
+    } on Exception catch (e) {
+      expect(e, TypeMatcher<CircularDependencyException>());
+    }
   });
 }

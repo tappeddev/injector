@@ -1,77 +1,91 @@
-typedef T Factory<T>(Injector injector);
+import 'package:injector/src/exception/already_defined_exception.dart';
+import 'package:injector/src/exception/circular_dependency_exception.dart';
+import 'package:injector/src/exception/not_defined_exception.dart';
+import 'package:injector/src/factory/factory.dart';
+import 'package:injector/src/factory/provider_factory.dart';
+import 'package:injector/src/factory/singelton_factory.dart';
 
 class Injector {
   static final Injector _singleton = Injector._internal();
 
-  factory Injector() {
-    return _singleton;
-  }
+  factory Injector() => _singleton;
 
   Injector._internal();
 
-  Map<int, Factory> _dependencyFactoryMap = Map<int, Factory>();
+  Map<int, Factory<dynamic>> _factoryMap = Map<int, Factory>();
 
-  Map<int, Factory> _singletonFactoryMap = Map<int, Factory>();
+  void registerDependency<T>(Builder<T> builder) {
+    int identity = _getIdentity<T>();
 
-  Map<int, Object> _singletonMap = Map<int, Object>();
+    _checkValidation<T>();
 
-  void registerDependency<T>(Factory<T> factory) {
-    int hashcode = T.hashCode;
+    _checkForDuplicates<T>(identity);
 
-    bool isValid = _isRegistrationValid<T>(hashcode);
-
-    if (isValid) {
-      _dependencyFactoryMap[hashcode] = factory;
-    }
+    _factoryMap[identity] = ProviderFactory<T>(builder, this);
   }
 
-  void registerSingleton<T>(Factory<T> factory) {
-    int hashCode = T.hashCode;
+  void registerSingleton<T>(Builder<T> builder) {
+    int identity = _getIdentity<T>();
 
-    bool isValid = _isRegistrationValid<T>(hashCode);
+    _checkValidation<T>();
 
-    if (isValid) {
-      _singletonFactoryMap[hashCode] = factory;
-    }
+    _checkForDuplicates<T>(identity);
+
+    _factoryMap[identity] = SingletonFactory<T>(builder, this);
   }
 
-  bool _isRegistrationValid<T>(int hashcode) {
-    if (T == dynamic) {
-      throw Exception(
-          "No type specified !\nCan not register dependencies for type \"$T\"");
-    }
-
-    if (_singletonFactoryMap.containsKey(hashcode) ||
-        _dependencyFactoryMap.containsKey(hashcode)) {
-      throw Exception("type \"${T.toString()}\" already defined !");
-    }
-
-    return true;
-  }
+  /// Whenever a factory is called to get a dependency
+  /// the identifier of that factory is saved to this list and
+  /// is removed when the instance is successfully created.
+  ///
+  /// A circular dependency is detected when the factory id was not removed
+  /// meaning that the instance was not created
+  /// but the same factory was called more than once
+  var _factoryCallIds = List<int>();
 
   T getDependency<T>() {
-    var hashCode = T.hashCode;
+    int identity = _getIdentity<T>();
 
-    if (T == dynamic) {
-      throw Exception("Can not get dependencies for type \"$T\"");
+    _checkValidation<T>();
+
+    if (!_factoryMap.containsKey(identity)) {
+      throw NotDefinedException(type: T.toString());
     }
 
-    if (_dependencyFactoryMap.containsKey(hashCode)) {
-      var builder = _dependencyFactoryMap[hashCode];
-      return builder(this) as T;
-    } else if (_singletonMap.containsKey(hashCode)) {
-      return _singletonMap[hashCode] as T;
-    } else if (_singletonFactoryMap.containsKey(hashCode)) {
-      var builder = _singletonFactoryMap[hashCode];
-      return _singletonMap[hashCode] = builder(this) as T;
-    } else {
-      throw Exception("Dependency with type \"$T\" not registered !");
+    var factory = _factoryMap[identity];
+    var factoryId = factory.hashCode;
+
+    if (_factoryCallIds.contains(factoryId)) {
+      throw CircularDependencyException(type: T.toString());
+    }
+
+    _factoryCallIds.add(factoryId);
+
+    var instance = factory.instance as T;
+    _factoryCallIds.remove(factoryId);
+
+    return instance;
+  }
+
+  void _checkValidation<T>() {
+    var type = T.toString();
+
+    if (T == dynamic) {
+      throw Exception(
+          "No type specified !\nCan not register dependencies for type \"$type\"");
     }
   }
 
+  void _checkForDuplicates<T>(int identity) {
+    if (_factoryMap.containsKey(identity)) {
+      throw AlreadyDefinedException(type: T.toString());
+    }
+  }
+
+  int _getIdentity<T>() => T.hashCode;
+
   void clearDependencies() {
-    _dependencyFactoryMap.clear();
-    _singletonMap.clear();
-    _singletonFactoryMap.clear();
+    _factoryCallIds.clear();
+    _factoryMap.clear();
   }
 }
