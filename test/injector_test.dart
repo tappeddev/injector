@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:injector/injector.dart';
 import 'package:injector/src/exception/circular_dependency_exception.dart';
 import 'package:test/test.dart';
