@@ -1,3 +1,7 @@
+## 1.0.3
+
+- Change license from BSD-3 to Apache 2
+
 ## 1.0.2
 
 - Upgrade analysis_options.yaml

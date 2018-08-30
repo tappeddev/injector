@@ -1,7 +1,7 @@
 name: injector
 description: injector is a simple to use and lightweight dependency injection library for dart
 
-version: 1.0.2
+version: 1.0.3
 homepage: https://github.com/tikkrapp/injector
 author: Tikkr <info@tikkr.app>
 
