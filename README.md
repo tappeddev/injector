@@ -39,9 +39,16 @@ A simple usage example:
             });
         
     // Register your dependencies / singletons in the  __main.dart__ file
-    
 
+## Notice
 
+If you have an issue with getting dependencies from the injector, check that imports of your dependencies classes are absolute.
+
+Good:
+import 'package:<project_name>/some/package/<file_name>.dart';
+
+Bad:
+import '../../some/package/<file_name>.dart';
 
 ## Features and bugs
 
