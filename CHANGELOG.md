@@ -1,3 +1,8 @@
+## 1.0.4
+
+- Add some documentation for each class
+
+
 ## 1.0.3
 
 - Change license from BSD-3 to Apache 2
