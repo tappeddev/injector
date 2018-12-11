@@ -6,14 +6,55 @@ import 'package:injector/src/factory/provider_factory.dart';
 import 'package:injector/src/factory/singelton_factory.dart';
 
 class Injector {
+
+  /**
+   * The static / single instance of the injector
+   */
   static final Injector _singleton = Injector._internal();
 
+  /**
+   * The factory to get the singleton / static instance
+   */
   factory Injector() => _singleton;
 
+  /**
+   * The private constructor of the injector
+   * We don't allow the user to create a second instance of the injector!
+   */
   Injector._internal();
 
+  /**
+   * The Map that contains:
+   *
+   *  [SingletonFactory] - The single instances
+   *
+   * [ProviderFactory] - The provider factory that contains the type information.
+   *                     If creates a new instance every time
+   */
   Map<int, Factory<dynamic>> _factoryMap = Map<int, Factory>();
 
+
+  /**
+   * abstract class UserService {
+   *  void Login(String username, String password);
+   * }
+   *
+   * class UserServiceImpl implements UserService {
+   *  void Login(String username, String password){
+   *    .....
+   *    .....
+   *  }
+   * }
+   *
+   * Injector().registerDependency<UserService>((_) => new UserService);
+   *
+   * If you now trying to get your dependency with:
+   *
+   *     var userService = Injector().getDependency<UserService>();
+   *
+   * You get a new instance every time that you call this function!
+   *
+   */
   void registerDependency<T>(Builder<T> builder) {
     int identity = _getIdentity<T>();
 
@@ -24,6 +65,28 @@ class Injector {
     _factoryMap[identity] = ProviderFactory<T>(builder, this);
   }
 
+  /**
+   * abstract class UserService {
+   *  void Login(String username, String password);
+   * }
+   *
+   * class UserServiceImpl implements UserService {
+   *  void Login(String username, String password){
+   *    .....
+   *    .....
+   *  }
+   * }
+   *
+   *
+   * Injector().registerSingleton<UserService>((_) => new UserService);
+   *
+   * If you now trying to get your dependency with:
+   *
+   *    Injector().getDependency<UserService>();
+   *
+   * You get the same instance every time!
+   *
+   */
   void registerSingleton<T>(Builder<T> builder) {
     int identity = _getIdentity<T>();
 
@@ -43,6 +106,16 @@ class Injector {
   /// but the same factory was called more than once
   var _factoryCallIds = List<int>();
 
+  /**
+   * Get your registered dependencies / singletons !
+   *
+   * Be careful! It throws the following Exceptions:
+   *
+   *    [NotDefinedException] - If you try to get a instance that is not registered
+   *
+   *    [CircularDependencyException] - If you have an circulatory issue
+   *
+   */
   T getDependency<T>() {
     int identity = _getIdentity<T>();
 
@@ -71,6 +144,14 @@ class Injector {
     var type = T.toString();
 
     if (T == dynamic) {
+
+      /**
+       * You can register a instance without a "key" type:
+       * e.g
+       *    - Injector().registerDependency((_) => new UserService()); <= This doesn't work
+       *
+       *     - Injector().registerDependency<IUserService>((_) => new UserService()); <= This works
+       */
       throw Exception(
           "No type specified !\nCan not register dependencies for type \"$type\"");
     }
@@ -84,6 +165,13 @@ class Injector {
 
   int _getIdentity<T>() => T.hashCode;
 
+
+  /**
+   * This method removes clears the injector.
+   *
+   * Maybe you need this in some test cases.
+   *
+   */
   void clearDependencies() {
     _factoryCallIds.clear();
     _factoryMap.clear();
