@@ -103,14 +103,16 @@ void main() {
   });
 
   test("RegisterDependency with name", () {
-    String dependencyName = "RegistedWithName";
+    String dependencyName = "RegisterWithName";
 
-    injector.registerDependency<Engine>((injector) => Engine(),
+    var rawEngine = Engine();
+
+    injector.registerSingleton<Engine>((injector) => rawEngine,
         dependencyName: dependencyName);
 
     var engine = injector.getDependency<Engine>(dependencyName: dependencyName);
 
-    expect(engine, TypeMatcher<Engine>());
+    expect(engine == rawEngine, true);
   });
 
   test("Register two time the same dependencies with different names", () {
