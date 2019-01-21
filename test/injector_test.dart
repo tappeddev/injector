@@ -9,7 +9,7 @@ void main() {
   Injector injector;
 
   setUp(() {
-    injector = Injector();
+    injector = Injector.appInstance;
     injector.clearDependencies();
   });
 
@@ -100,5 +100,35 @@ void main() {
     } on Exception catch (e) {
       expect(e, TypeMatcher<CircularDependencyException>());
     }
+  });
+
+  test("RegisterDependency with name", () {
+    String dependencyName = "RegistedWithName";
+
+    injector.registerDependency<Engine>((injector) => Engine(),
+        dependencyName: dependencyName);
+
+    var engine = injector.getDependency<Engine>(dependencyName: dependencyName);
+
+    expect(engine, TypeMatcher<Engine>());
+  });
+
+  test("Register two time the same dependencies with different names", () {
+    String dependencyName1 = "Dep1";
+    String dependencyName2 = "Dep2";
+
+    injector.registerDependency<Engine>((injector) => Engine(),
+        dependencyName: dependencyName1);
+
+    injector.registerDependency<Engine>((injector) => Engine(),
+        dependencyName: dependencyName2);
+
+    var engine1 =
+        injector.getDependency<Engine>(dependencyName: dependencyName1);
+    var engine2 =
+        injector.getDependency<Engine>(dependencyName: dependencyName2);
+
+    expect(engine1, TypeMatcher<Engine>());
+    expect(engine2, TypeMatcher<Engine>());
   });
 }

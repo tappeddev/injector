@@ -1,3 +1,10 @@
+## 1.0.5
+
+- **Breaking Changes!** Injector is not a singleton. 
+You can use it like a singleton with the static instance ```Injector.appInstance``` 
+- You can register your dependencies with a name. But be careful, 
+you need always the generic type! It looks like ```Injector.allInstance.registerDependency<UserService>((injector) => UserServiceImpl), dependencyName: "MyCustomName"); ```
+
 ## 1.0.4
 
 - Add some documentation for each class
