@@ -6,22 +6,15 @@ import 'package:injector/src/factory/provider_factory.dart';
 import 'package:injector/src/factory/singelton_factory.dart';
 
 class Injector {
-
   /**
    * The static / single instance of the injector
    */
-  static final Injector _singleton = Injector._internal();
+  static final Injector appInstance = Injector();
 
   /**
-   * The factory to get the singleton / static instance
+   * The constructor to create a new instance
    */
-  factory Injector() => _singleton;
-
-  /**
-   * The private constructor of the injector
-   * We don't allow the user to create a second instance of the injector!
-   */
-  Injector._internal();
+  Injector();
 
   /**
    * The Map that contains:
@@ -31,8 +24,7 @@ class Injector {
    * [ProviderFactory] - The provider factory that contains the type information.
    *                     If creates a new instance every time
    */
-  Map<int, Factory<dynamic>> _factoryMap = Map<int, Factory>();
-
+  Map<String, Factory<Object>> _factoryMap = Map<String, Factory<Object>>();
 
   /**
    * abstract class UserService {
@@ -46,19 +38,19 @@ class Injector {
    *  }
    * }
    *
-   * Injector().registerDependency<UserService>((_) => new UserService);
+   * Injector.appInstance.registerDependency<UserService>((_) => new UserService);
    *
    * If you now trying to get your dependency with:
    *
-   *     var userService = Injector().getDependency<UserService>();
+   *     var userService = Injector.appInstance.getDependency<UserService>();
    *
-   * You get a new instance every time that you call this function!
+   * You get a new instance of your dependency every time that you call this function!
    *
    */
-  void registerDependency<T>(Builder<T> builder) {
-    int identity = _getIdentity<T>();
-
+  void registerDependency<T>(Builder<T> builder, {String dependencyName = ""}) {
     _checkValidation<T>();
+
+    String identity = _getIdentity<T>(dependencyName);
 
     _checkForDuplicates<T>(identity);
 
@@ -78,19 +70,19 @@ class Injector {
    * }
    *
    *
-   * Injector().registerSingleton<UserService>((_) => new UserService);
+   * Injector.appInstance.registerSingleton<UserService>((_) => new UserService);
    *
    * If you now trying to get your dependency with:
    *
-   *    Injector().getDependency<UserService>();
+   *    Injector.appInstance.getDependency<UserService>();
    *
-   * You get the same instance every time!
+   * You get the same instance of your dependency every time!
    *
    */
-  void registerSingleton<T>(Builder<T> builder) {
-    int identity = _getIdentity<T>();
-
+  void registerSingleton<T>(Builder<T> builder, {String dependencyName = ""}) {
     _checkValidation<T>();
+
+    String identity = _getIdentity<T>(dependencyName);
 
     _checkForDuplicates<T>(identity);
 
@@ -116,10 +108,10 @@ class Injector {
    *    [CircularDependencyException] - If you have an circulatory issue
    *
    */
-  T getDependency<T>() {
-    int identity = _getIdentity<T>();
-
+  T getDependency<T>({String dependencyName = ""}) {
     _checkValidation<T>();
+
+    String identity = _getIdentity<T>(dependencyName);
 
     if (!_factoryMap.containsKey(identity)) {
       throw NotDefinedException(type: T.toString());
@@ -144,27 +136,26 @@ class Injector {
     var type = T.toString();
 
     if (T == dynamic) {
-
       /**
        * You can register a instance without a "key" type:
        * e.g
-       *    - Injector().registerDependency((_) => new UserService()); <= This doesn't work
+       *    - Injector.appInstance.registerDependency((_) => new UserService()); <= This doesn't work
        *
-       *     - Injector().registerDependency<IUserService>((_) => new UserService()); <= This works
+       *     - Injector.appInstance.registerDependency<IUserService>((_) => new UserService()); <= This works
        */
       throw Exception(
           "No type specified !\nCan not register dependencies for type \"$type\"");
     }
   }
 
-  void _checkForDuplicates<T>(int identity) {
+  void _checkForDuplicates<T>(String identity) {
     if (_factoryMap.containsKey(identity)) {
       throw AlreadyDefinedException(type: T.toString());
     }
   }
 
-  int _getIdentity<T>() => T.hashCode;
-
+  String _getIdentity<T>(String dependencyName) =>
+      "$dependencyName${T.hashCode.toString()}";
 
   /**
    * This method removes clears the injector.
