@@ -46,13 +46,18 @@ class Injector {
    *
    * You get a new instance of your dependency every time that you call this function!
    *
+   * [override] => Override the existing dependency
+   *
    */
-  void registerDependency<T>(Builder<T> builder, {String dependencyName = ""}) {
+  void registerDependency<T>(Builder<T> builder,
+      {bool override = false, String dependencyName = ""}) {
     _checkValidation<T>();
 
     String identity = _getIdentity<T>(dependencyName);
 
-    _checkForDuplicates<T>(identity);
+    if (!override) {
+      _checkForDuplicates<T>(identity);
+    }
 
     _factoryMap[identity] = ProviderFactory<T>(builder, this);
   }
@@ -78,13 +83,18 @@ class Injector {
    *
    * You get the same instance of your dependency every time!
    *
+   * [override] => Override the existing dependency
+   *
    */
-  void registerSingleton<T>(Builder<T> builder, {String dependencyName = ""}) {
+  void registerSingleton<T>(Builder<T> builder,
+      {bool override = false, String dependencyName = ""}) {
     _checkValidation<T>();
 
     String identity = _getIdentity<T>(dependencyName);
 
-    _checkForDuplicates<T>(identity);
+    if (!override) {
+      _checkForDuplicates<T>(identity);
+    }
 
     _factoryMap[identity] = SingletonFactory<T>(builder, this);
   }
@@ -132,6 +142,38 @@ class Injector {
     return instance;
   }
 
+  /**
+   * This method checks if there is a registered dependency
+   */
+  bool exists<T>({String dependencyName = ""}) {
+    String dependencyKey = _getIdentity<T>(dependencyName);
+
+    return _factoryMap.containsKey(dependencyKey);
+  }
+
+  /**
+   * This method removes one dependency by the key
+   * */
+  void removeByKey<T>({String dependencyName = ""}) {
+    String dependencyKey = _getIdentity<T>(dependencyName);
+
+    _factoryMap.remove(dependencyKey);
+  }
+
+  /**
+   * This method removes clears the injector.
+   *
+   * Maybe you need this in some test cases.
+   */
+  void clearAll() {
+    _factoryCallIds.clear();
+    _factoryMap.clear();
+  }
+
+  // ------
+  // Helper
+  // ------
+
   void _checkValidation<T>() {
     var type = T.toString();
 
@@ -156,15 +198,4 @@ class Injector {
 
   String _getIdentity<T>(String dependencyName) =>
       "$dependencyName${T.hashCode.toString()}";
-
-  /**
-   * This method removes clears the injector.
-   *
-   * Maybe you need this in some test cases.
-   *
-   */
-  void clearDependencies() {
-    _factoryCallIds.clear();
-    _factoryMap.clear();
-  }
 }

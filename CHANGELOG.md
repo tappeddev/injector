@@ -1,3 +1,9 @@
+
+## 1.0.6
+
+- Add remove dependency method
+- Add override dependencies property 
+
 ## 1.0.5
 
 - **Breaking Changes!** Injector is not a singleton. 
