@@ -154,7 +154,7 @@ class Injector {
   /**
    * This method removes one dependency by the key
    * */
-  void clearByKey<T>({String dependencyName = ""}) {
+  void removeByKey<T>({String dependencyName = ""}) {
     String dependencyKey = _getIdentity<T>(dependencyName);
 
     _factoryMap.remove(dependencyKey);
