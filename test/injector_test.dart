@@ -10,7 +10,7 @@ void main() {
 
   setUp(() {
     injector = Injector.appInstance;
-    injector.clearDependencies();
+    injector.clearAll();
   });
 
   test('Register dependency / Get dependency - Test', () {

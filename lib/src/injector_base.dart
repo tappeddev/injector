@@ -46,16 +46,16 @@ class Injector {
    *
    * You get a new instance of your dependency every time that you call this function!
    *
-   * [force] => Override the existing dependency
+   * [override] => Override the existing dependency
    *
    */
   void registerDependency<T>(Builder<T> builder,
-      {bool force = false, String dependencyName = ""}) {
+      {bool override = false, String dependencyName = ""}) {
     _checkValidation<T>();
 
     String identity = _getIdentity<T>(dependencyName);
-    
-    if (!force) {
+
+    if (!override) {
       _checkForDuplicates<T>(identity);
     }
 
@@ -83,16 +83,16 @@ class Injector {
    *
    * You get the same instance of your dependency every time!
    *
-   * [force] => Override the existing dependency
+   * [override] => Override the existing dependency
    *
    */
   void registerSingleton<T>(Builder<T> builder,
-      {bool force = false, String dependencyName = ""}) {
+      {bool override = false, String dependencyName = ""}) {
     _checkValidation<T>();
 
     String identity = _getIdentity<T>(dependencyName);
 
-    if (!force) {
+    if (!override) {
       _checkForDuplicates<T>(identity);
     }
 
@@ -142,18 +142,18 @@ class Injector {
     return instance;
   }
 
-  ///
-  /// This method checks if there is a registered dependency
-  ///
+  /**
+   * This method checks if there is a registered dependency
+   */
   bool exists<T>({String dependencyName = ""}) {
     String dependencyKey = _getIdentity<T>(dependencyName);
 
     return _factoryMap.containsKey(dependencyKey);
   }
 
-  ///
-  /// This method removes one dependency by the key
-  ///
+  /**
+   * This method removes one dependency by the key
+   * */
   void clearByKey<T>({String dependencyName = ""}) {
     String dependencyKey = _getIdentity<T>(dependencyName);
 
@@ -164,9 +164,8 @@ class Injector {
    * This method removes clears the injector.
    *
    * Maybe you need this in some test cases.
-   *
    */
-  void clearDependencies() {
+  void clearAll() {
     _factoryCallIds.clear();
     _factoryMap.clear();
   }
