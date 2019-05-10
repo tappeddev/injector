@@ -7,7 +7,6 @@ import 'package:meta/meta.dart';
 /// * A chicken depends on an egg.
 /// * An egg depends on a chicken.
 class CircularDependencyException implements Exception {
-
   String type;
 
   CircularDependencyException({@required this.type});
