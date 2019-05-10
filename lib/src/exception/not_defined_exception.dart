@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-/// Gets thrown when trying get a dependency that has not been registered yet.
+/// Gets thrown when trying to get a dependency that has not been registered yet.
 ///
 /// Some checkpoints that could cause this issue:
 /// * The dependency got registered with the wrong key type:

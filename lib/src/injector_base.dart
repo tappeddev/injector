@@ -13,7 +13,7 @@ class Injector {
   /// registered by [registerSingleton] and [registerDependency] respectively.
   Map<String, Factory<Object>> _factoryMap = Map<String, Factory<Object>>();
 
-  /// Registers a dependency by using [ProviderFactory].
+  /// Registers a dependency.
   ///
   /// Overrides dependencies with the same signature when [override] is true.
   /// Uses [dependencyName] to differentiate between dependencies that have the
@@ -37,7 +37,7 @@ class Injector {
   ///     }
   /// }
   ///
-  /// Injector.appInstance.registerDependency<UserService>((_) => new UserService);
+  /// Injector.appInstance.registerDependency<UserService>((_) => new UserServiceImpl());
   /// ```
   ///
   /// Then getting the registered dependency:
@@ -58,7 +58,7 @@ class Injector {
     _factoryMap[identity] = ProviderFactory<T>(builder, this);
   }
 
-  /// Registers a dependency by using [SingletonFactory].
+  /// Registers a singleton dependency.
   ///
   /// Overrides dependencies with the same signature when [override] is true.
   /// Uses [dependencyName] to differentiate between dependencies that have the
@@ -72,17 +72,17 @@ class Injector {
   ///
   /// ```dart
   /// abstract class UserService {
-  ///  void Login(String username, String password);
+  ///  void login(String username, String password);
   /// }
   ///
   /// class UserServiceImpl implements UserService {
-  ///  void Login(String username, String password){
+  ///  void login(String username, String password){
   ///    .....
   ///    .....
   ///  }
   /// }
   ///
-  /// Injector.appInstance.registerSingleton<UserService>((_) => new UserService);
+  /// Injector.appInstance.registerSingleton<UserService>((_) => new UserServiceImpl());
   /// ```
   /// Then getting the registered dependency:
   /// ```dart
