@@ -1,5 +1,6 @@
 ## 1.0.8
 - Add travis ci badge to readme
+- Reformat using dartfmt
 
 ## 1.0.7
 - Refactor docs
