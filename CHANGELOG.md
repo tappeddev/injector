@@ -1,3 +1,6 @@
+## 1.0.8
+- Add travis ci badge to readme
+
 ## 1.0.7
 - Refactor docs
 

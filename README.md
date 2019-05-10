@@ -1,4 +1,4 @@
-# Injector
+# Injector 💉 [![Build Status](https://travis-ci.com/tikkrapp/injector.svg?branch=master)](https://travis-ci.com/tikkrapp/injector)
 
 We have been using this injector in all our projects for quite a while now.
 It does not replace a complex dependency injection framework like Dagger, but it provides the basics that most apps need.
