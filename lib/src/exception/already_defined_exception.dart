@@ -9,7 +9,6 @@ import 'package:meta/meta.dart';
 /// Injector().registerDependency<IInterface>((_) => SecondImplementation());
 /// ```
 class AlreadyDefinedException implements Exception {
-
   // The Type of the already defined instance
   String type;
 

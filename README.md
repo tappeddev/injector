@@ -57,5 +57,3 @@ import '../../some/package/<file_name>.dart';
 Please file feature requests and bugs at the [issue tracker][tracker].
 
 [tracker]: https://github.com/tikkrapp/injector/issues
-
-test travis

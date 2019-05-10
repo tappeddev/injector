@@ -11,7 +11,6 @@ import 'package:meta/meta.dart';
 ///   ```
 /// * The dependency has not been registered at all
 class NotDefinedException implements Exception {
-
   // The Type of the missing instance
   String type;
 

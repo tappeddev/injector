@@ -134,16 +134,14 @@ void main() {
     expect(engine2, TypeMatcher<Engine>());
   });
 
-
   test("override a dependencies", () {
-
     injector.registerDependency<Engine>((injector) => Engine()..capacity = "1");
 
-    injector.registerDependency<Engine>((injector) => Engine()..capacity = "2", override: true);
+    injector.registerDependency<Engine>((injector) => Engine()..capacity = "2",
+        override: true);
 
     var engine = injector.getDependency<Engine>();
 
     expect(engine.capacity, "2");
   });
-
 }
