@@ -1,34 +1,15 @@
 import 'package:meta/meta.dart';
 
-/**
- * We throw this exception if you try to call a dependency that doesn't exist.
- *
- * For example:
- *
- * var myInstance = Injector().getDependency<IInterface>();
- *
- * You can fix this issue with the following checkpoints:
- *  - Did you register the register the instance with the right key type?
- *
- *    e.g:
- *       - Injector().registerDependency<FirstImplementation>((_) => FirstImplementation());
- *
- *       // This throws the [NotDefinedException]
- *       - Injector().getDependency<IInterface>();
- *
- *    You try to get the instance with the wrong key type!
- *
- *    e.g:
- *       - Injector().registerDependency<IInterface>((_) => FirstImplementation());
- *
- *  - Did you call your register method?
- *
- *    Maybe you missed to call the register function!
- *
- *    Be sure that you call:
- *    - Injector().registerDependency<IInterface>((_) => Implementation());
- *
- */
+/// Gets thrown when trying to get a dependency that has not been registered yet.
+///
+/// Some checkpoints that could cause this issue:
+/// * The dependency got registered with the wrong key type:
+///   ```dart
+///   Injector().registerDependency<Interface1>((_) => Implementation1());
+///
+///   Injector().getDependency<Interface2>(); // This throws the Exception!
+///   ```
+/// * The dependency has not been registered at all
 class NotDefinedException implements Exception {
 
   // The Type of the missing instance
