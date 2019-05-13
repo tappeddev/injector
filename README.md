@@ -32,7 +32,7 @@ A simple usage example:
         });
         
     // Register a singleton
-     injector.registerSingleton<Car>((injector) {
+    injector.registerSingleton<Car>((injector) {
               var engine = injector.getDependency<Engine>();
               var fuel = injector.getDependency<Fuel>();
               var driver = injector.getDependency<Driver>();
