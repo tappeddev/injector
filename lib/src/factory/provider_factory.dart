@@ -7,11 +7,10 @@ class ProviderFactory<T> implements Factory<T> {
   @override
   Builder<T> builder;
 
-  @override
   Injector injector;
 
-  ProviderFactory(this.builder, this.injector);
+  ProviderFactory(this.builder);
 
   @override
-  T get instance => builder(injector);
+  T get instance => builder();
 }

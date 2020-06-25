@@ -4,9 +4,9 @@ import 'package:meta/meta.dart';
 ///
 /// For example:
 /// ```dart
-/// Injector().registerDependency<IInterface>((_) => FirstImplementation());
+/// Injector().registerDependency<InterfaceClass>((_) => FirstImplementation());
 ///
-/// Injector().registerDependency<IInterface>((_) => SecondImplementation());
+/// Injector().registerDependency<InterfaceClass>((_) => SecondImplementation());
 /// ```
 class AlreadyDefinedException implements Exception {
   // The Type of the already defined instance

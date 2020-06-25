@@ -29,6 +29,7 @@ class CarImpl extends Car {
 
 abstract class Database {
   void add(String text);
+
   void remove(int id);
 }
 
@@ -61,15 +62,15 @@ void main() {
   Injector injector = Injector.appInstance;
 
   //Register a dependency
-  injector.registerDependency<Engine>((_) => Engine());
+  injector.registerDependency<Engine>(() => Engine());
 
-  injector.registerDependency<Car>((Injector injector) {
+  injector.registerDependency<Car>(() {
     var engine = injector.getDependency<Engine>();
     return CarImpl(engine: engine);
   });
 
   //Maybe you want to register a class and you need it as a singleton
-  injector.registerSingleton<Database>((_) => TikkrDatabase());
+  injector.registerSingleton<Database>(() => TikkrDatabase());
 }
 
 //Now you can easily get your dependencies / singletons with one line

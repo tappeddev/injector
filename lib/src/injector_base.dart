@@ -45,8 +45,11 @@ class Injector {
   /// ```dart
   /// var userService = Injector.appInstance.getDependency<UserService>();
   /// ```
-  void registerDependency<T>(Builder<T> builder,
-      {bool override = false, String dependencyName = ""}) {
+  void registerDependency<T>(
+    Builder<T> builder, {
+    bool override = false,
+    String dependencyName = "",
+  }) {
     _checkValidation<T>();
 
     String identity = _getIdentity<T>(dependencyName);
@@ -55,7 +58,7 @@ class Injector {
       _checkForDuplicates<T>(identity);
     }
 
-    _factoryMap[identity] = ProviderFactory<T>(builder, this);
+    _factoryMap[identity] = ProviderFactory<T>(builder);
   }
 
   /// Registers a singleton dependency.
@@ -88,8 +91,7 @@ class Injector {
   /// ```dart
   /// Injector.appInstance.getDependency<UserService>();
   /// ```
-  void registerSingleton<T>(Builder<T> builder,
-      {bool override = false, String dependencyName = ""}) {
+  void registerSingleton<T>(Builder<T> builder, {bool override = false, String dependencyName = ""}) {
     _checkValidation<T>();
 
     String identity = _getIdentity<T>(dependencyName);
@@ -98,7 +100,7 @@ class Injector {
       _checkForDuplicates<T>(identity);
     }
 
-    _factoryMap[identity] = SingletonFactory<T>(builder, this);
+    _factoryMap[identity] = SingletonFactory<T>(builder);
   }
 
   /// Whenever a factory is called to get a dependency
@@ -171,8 +173,7 @@ class Injector {
     var type = T.toString();
 
     if (T == dynamic) {
-      throw Exception(
-          "No type specified !\nCan not register dependencies for type \"$type\"");
+      throw Exception("No type specified !\nCan not register dependencies for type \"$type\"");
     }
   }
 
@@ -182,6 +183,5 @@ class Injector {
     }
   }
 
-  String _getIdentity<T>(String dependencyName) =>
-      "$dependencyName${T.hashCode.toString()}";
+  String _getIdentity<T>(String dependencyName) => "$dependencyName${T.hashCode.toString()}";
 }

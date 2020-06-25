@@ -14,13 +14,13 @@ void main() {
   });
 
   test('Register dependency / Get dependency - Test', () {
-    injector.registerDependency<Fuel>((_) => Fuel());
+    injector.registerDependency<Fuel>(() => Fuel());
 
-    injector.registerDependency<Driver>((_) => Driver());
+    injector.registerDependency<Driver>(() => Driver());
 
-    injector.registerDependency<Engine>((_) => Engine());
+    injector.registerDependency<Engine>(() => Engine());
 
-    injector.registerDependency<Car>((Injector injector) {
+    injector.registerDependency<Car>(() {
       var fuel = injector.getDependency<Fuel>();
       var driver = injector.getDependency<Driver>();
       var engine = injector.getDependency<Engine>();
@@ -44,13 +44,13 @@ void main() {
   });
 
   test('Register singleton / Get singleton - Test', () {
-    injector.registerSingleton<Fuel>((_) => Fuel());
+    injector.registerSingleton<Fuel>(() => Fuel());
 
-    injector.registerSingleton<Driver>((_) => Driver());
+    injector.registerSingleton<Driver>(() => Driver());
 
-    injector.registerSingleton<Engine>((_) => Engine());
+    injector.registerSingleton<Engine>(() => Engine());
 
-    injector.registerSingleton<Car>((Injector injector) {
+    injector.registerSingleton<Car>(() {
       var fuel = injector.getDependency<Fuel>();
       var driver = injector.getDependency<Driver>();
       var engine = injector.getDependency<Engine>();
@@ -64,11 +64,10 @@ void main() {
     expect(singleTonCar1, equals(singleTonCar2));
   });
 
-  test('Register two classes with the same name from different packages - Test',
-      () {
-    injector.registerDependency<Engine>((_) => Engine());
+  test('Register two classes with the same name from different packages - Test', () {
+    injector.registerDependency<Engine>(() => Engine());
 
-    injector.registerDependency<test2.Engine>((_) => test2.Engine());
+    injector.registerDependency<test2.Engine>(() => test2.Engine());
 
     var engine1 = injector.getDependency<Engine>();
 
@@ -78,9 +77,9 @@ void main() {
   });
 
   test('Detects Cylce dependencies', () {
-    injector.registerDependency<Engine>((_) => Engine());
+    injector.registerDependency<Engine>(() => Engine());
 
-    injector.registerDependency<Fuel>((injector) {
+    injector.registerDependency<Fuel>(() {
       injector.getDependency<Engine>();
 
       // this will trigger the cycle
@@ -89,7 +88,7 @@ void main() {
       return Fuel();
     });
 
-    injector.registerDependency<Driver>((injector) {
+    injector.registerDependency<Driver>(() {
       injector.getDependency<Engine>();
       injector.getDependency<Fuel>();
       return Driver();
@@ -107,8 +106,7 @@ void main() {
 
     var rawEngine = Engine();
 
-    injector.registerSingleton<Engine>((injector) => rawEngine,
-        dependencyName: dependencyName);
+    injector.registerSingleton<Engine>(() => rawEngine, dependencyName: dependencyName);
 
     var engine = injector.getDependency<Engine>(dependencyName: dependencyName);
 
@@ -119,26 +117,24 @@ void main() {
     String dependencyName1 = "Dep1";
     String dependencyName2 = "Dep2";
 
-    injector.registerDependency<Engine>((injector) => Engine(),
-        dependencyName: dependencyName1);
+    injector.registerDependency<Engine>(() => Engine(), dependencyName: dependencyName1);
 
-    injector.registerDependency<Engine>((injector) => Engine(),
-        dependencyName: dependencyName2);
+    injector.registerDependency<Engine>(() => Engine(), dependencyName: dependencyName2);
 
-    var engine1 =
-        injector.getDependency<Engine>(dependencyName: dependencyName1);
-    var engine2 =
-        injector.getDependency<Engine>(dependencyName: dependencyName2);
+    var engine1 = injector.getDependency<Engine>(dependencyName: dependencyName1);
+    var engine2 = injector.getDependency<Engine>(dependencyName: dependencyName2);
 
     expect(engine1, TypeMatcher<Engine>());
     expect(engine2, TypeMatcher<Engine>());
   });
 
   test("override a dependencies", () {
-    injector.registerDependency<Engine>((injector) => Engine()..capacity = "1");
+    injector.registerDependency<Engine>(() => Engine()..capacity = "1");
 
-    injector.registerDependency<Engine>((injector) => Engine()..capacity = "2",
-        override: true);
+    injector.registerDependency<Engine>(
+      () => Engine()..capacity = "2",
+      override: true,
+    );
 
     var engine = injector.getDependency<Engine>();
 

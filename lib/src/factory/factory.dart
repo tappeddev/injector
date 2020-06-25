@@ -1,5 +1,3 @@
-import 'package:injector/injector.dart';
-
 /// Gets registered at the injector an then gets called by the injector to
 /// instantiate the dependency and all of its dependencies.
 ///
@@ -15,11 +13,12 @@ import 'package:injector/injector.dart';
 ///     return CarImpl(engine: engine);
 /// });
 /// ```
-typedef T Builder<T>(Injector injector);
+typedef T Builder<T>();
 
 abstract class Factory<T> {
-  Builder<T> builder;
-  Injector injector;
+  final Builder<T> builder;
+
+  Factory(this.builder);
 
   T get instance;
 }
