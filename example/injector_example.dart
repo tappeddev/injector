@@ -59,13 +59,13 @@ class TikkrDatabase extends Database {
 
 void main() {
   // Use this static instance
-  Injector injector = Injector.appInstance;
+  final injector = Injector.appInstance;
 
   //Register a dependency
   injector.registerDependency<Engine>(() => Engine());
 
   injector.registerDependency<Car>(() {
-    var engine = injector.getDependency<Engine>();
+    final engine = injector.getDependency<Engine>();
     return CarImpl(engine: engine);
   });
 
@@ -79,7 +79,7 @@ class WebView {
   Car customerCar;
 
   WebView() {
-    Injector injector = Injector.appInstance;
+    final injector = Injector.appInstance;
     database = injector.getDependency<Database>();
     customerCar = injector.getDependency<Car>();
   }

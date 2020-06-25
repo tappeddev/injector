@@ -21,14 +21,14 @@ void main() {
     injector.registerDependency<Engine>(() => Engine());
 
     injector.registerDependency<Car>(() {
-      var fuel = injector.getDependency<Fuel>();
-      var driver = injector.getDependency<Driver>();
-      var engine = injector.getDependency<Engine>();
+      final fuel = injector.getDependency<Fuel>();
+      final driver = injector.getDependency<Driver>();
+      final engine = injector.getDependency<Engine>();
 
       return CarImpl(driver: driver, engine: engine, fuel: fuel);
     });
 
-    Car car = injector.getDependency<Car>();
+    final car = injector.getDependency<Car>();
 
     expect(car, isNotNull);
     expect(car.drive(), true);
@@ -39,7 +39,7 @@ void main() {
     try {
       injector.getDependency<Fuel>();
     } on Exception catch (e) {
-      expect(e, TypeMatcher<Exception>());
+      expect(e, const TypeMatcher<Exception>());
     }
   });
 
@@ -51,15 +51,15 @@ void main() {
     injector.registerSingleton<Engine>(() => Engine());
 
     injector.registerSingleton<Car>(() {
-      var fuel = injector.getDependency<Fuel>();
-      var driver = injector.getDependency<Driver>();
-      var engine = injector.getDependency<Engine>();
+      final fuel = injector.getDependency<Fuel>();
+      final driver = injector.getDependency<Driver>();
+      final engine = injector.getDependency<Engine>();
       return CarImpl(driver: driver, engine: engine, fuel: fuel);
     });
 
-    Car singleTonCar1 = injector.getDependency<Car>();
+    final singleTonCar1 = injector.getDependency<Car>();
 
-    Car singleTonCar2 = injector.getDependency<Car>();
+    final singleTonCar2 = injector.getDependency<Car>();
 
     expect(singleTonCar1, equals(singleTonCar2));
   });
@@ -69,9 +69,8 @@ void main() {
 
     injector.registerDependency<test2.Engine>(() => test2.Engine());
 
-    var engine1 = injector.getDependency<Engine>();
-
-    var engine2 = injector.getDependency<test2.Engine>();
+    final engine1 = injector.getDependency<Engine>();
+    final engine2 = injector.getDependency<test2.Engine>();
 
     expect(engine1, isNot(engine2));
   });
@@ -97,35 +96,33 @@ void main() {
     try {
       injector.getDependency<Fuel>();
     } on Exception catch (e) {
-      expect(e, TypeMatcher<CircularDependencyException>());
+      expect(e, const TypeMatcher<CircularDependencyException>());
     }
   });
 
   test("RegisterDependency with name", () {
-    String dependencyName = "RegisterWithName";
-
-    var rawEngine = Engine();
+    const dependencyName = "RegisterWithName";
+    final rawEngine = Engine();
 
     injector.registerSingleton<Engine>(() => rawEngine, dependencyName: dependencyName);
 
-    var engine = injector.getDependency<Engine>(dependencyName: dependencyName);
+    final engine = injector.getDependency<Engine>(dependencyName: dependencyName);
 
     expect(engine == rawEngine, true);
   });
 
   test("Register two time the same dependencies with different names", () {
-    String dependencyName1 = "Dep1";
-    String dependencyName2 = "Dep2";
+    const dependencyName1 = "Dep1";
+    const dependencyName2 = "Dep2";
 
     injector.registerDependency<Engine>(() => Engine(), dependencyName: dependencyName1);
-
     injector.registerDependency<Engine>(() => Engine(), dependencyName: dependencyName2);
 
-    var engine1 = injector.getDependency<Engine>(dependencyName: dependencyName1);
-    var engine2 = injector.getDependency<Engine>(dependencyName: dependencyName2);
+    final engine1 = injector.getDependency<Engine>(dependencyName: dependencyName1);
+    final engine2 = injector.getDependency<Engine>(dependencyName: dependencyName2);
 
-    expect(engine1, TypeMatcher<Engine>());
-    expect(engine2, TypeMatcher<Engine>());
+    expect(engine1, const TypeMatcher<Engine>());
+    expect(engine2, const TypeMatcher<Engine>());
   });
 
   test("override a dependencies", () {
@@ -136,7 +133,7 @@ void main() {
       override: true,
     );
 
-    var engine = injector.getDependency<Engine>();
+    final engine = injector.getDependency<Engine>();
 
     expect(engine.capacity, "2");
   });

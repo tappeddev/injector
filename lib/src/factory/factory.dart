@@ -13,7 +13,7 @@
 ///     return CarImpl(engine: engine);
 /// });
 /// ```
-typedef T Builder<T>();
+typedef Builder<T> = T Function();
 
 abstract class Factory<T> {
   final Builder<T> builder;

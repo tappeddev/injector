@@ -13,3 +13,4 @@ dependencies:
 
 dev_dependencies:
   test: ^1.5.2
+  extra_pedantic: 1.2.0

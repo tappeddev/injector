@@ -11,11 +11,5 @@ class SingletonFactory<T> implements Factory<T> {
   SingletonFactory(this.builder);
 
   @override
-  T get instance {
-    if (_value == null) {
-      _value = builder();
-    }
-
-    return _value;
-  }
+  T get instance => _value ??= builder();
 }
