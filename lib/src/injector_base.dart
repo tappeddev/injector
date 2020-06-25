@@ -2,9 +2,8 @@ import 'package:injector/src/exception/already_defined_exception.dart';
 import 'package:injector/src/exception/circular_dependency_exception.dart';
 import 'package:injector/src/exception/not_defined_exception.dart';
 import 'package:injector/src/factory/factory.dart';
-import 'package:injector/src/factory/provider_factory.dart';
-import 'package:injector/src/factory/singelton_factory.dart';
 
+// TODO update documentation
 class Injector {
   /// The static/single instance of the [Injector].
   static final Injector appInstance = Injector();
@@ -22,56 +21,8 @@ class Injector {
   /// The signature of a dependency consists of [T]
   /// and the optional [dependencyName].
   ///
-  /// The injector will always create new instances of dependencies that got
-  /// registered this way when calling [getDependency].
-  ///
-  /// Example:
-  /// ```dart
-  /// abstract class UserService {
-  ///     void Login(String username, String password);
-  /// }
-  ///
-  /// class UserServiceImpl implements UserService {
-  ///     void Login(String username, String password) {
-  ///         // does something..
-  ///     }
-  /// }
-  ///
-  /// Injector.appInstance.registerDependency<UserService>((_) => new UserServiceImpl());
-  /// ```
-  ///
-  /// Then getting the registered dependency:
-  ///
-  /// ```dart
-  /// var userService = Injector.appInstance.getDependency<UserService>();
-  /// ```
-  void registerDependency<T>(
-    Builder<T> builder, {
-    bool override = false,
-    String dependencyName = "",
-  }) {
-    _checkValidation<T>();
-
-    final identity = _getIdentity<T>(dependencyName);
-
-    if (!override) {
-      _checkForDuplicates<T>(identity);
-    }
-
-    _factoryMap[identity] = ProviderFactory<T>(builder);
-  }
-
-  /// Registers a singleton dependency.
-  ///
-  /// Overrides dependencies with the same signature when [override] is true.
-  /// Uses [dependencyName] to differentiate between dependencies that have the
-  /// same type.
-  ///
-  /// The signature of a dependency consists of [T]
-  /// and the optional [dependencyName].
-  ///
   /// The injector will always return the same singleton instance dependencies
-  /// that got registered this way when calling [getDependency].
+  /// that got registered this way when calling [instance].
   ///
   /// ```dart
   /// abstract class UserService {
@@ -91,7 +42,8 @@ class Injector {
   /// ```dart
   /// Injector.appInstance.getDependency<UserService>();
   /// ```
-  void registerSingleton<T>(Builder<T> builder, {bool override = false, String dependencyName = ""}) {
+  void register<T>(Factory<T> factory,
+      {bool override = false, String dependencyName = ""}) {
     _checkValidation<T>();
 
     final identity = _getIdentity<T>(dependencyName);
@@ -100,7 +52,7 @@ class Injector {
       _checkForDuplicates<T>(identity);
     }
 
-    _factoryMap[identity] = SingletonFactory<T>(builder);
+    _factoryMap[identity] = factory;
   }
 
   /// Whenever a factory is called to get a dependency
@@ -120,7 +72,7 @@ class Injector {
   ///
   /// Throws [CircularDependencyException] when the injector detected a circular
   /// dependency setup.
-  T getDependency<T>({String dependencyName = ""}) {
+  T instance<T>({String dependencyName = ""}) {
     _checkValidation<T>();
 
     final identity = _getIdentity<T>(dependencyName);
@@ -171,7 +123,9 @@ class Injector {
     final type = T.toString();
 
     if (T == dynamic) {
-      throw Exception("No type specified !\nCan not register dependencies for type \"$type\"");
+      throw Exception(
+        "No type specified !\nCan not register dependencies for type \"$type\"",
+      );
     }
   }
 
@@ -181,5 +135,30 @@ class Injector {
     }
   }
 
-  String _getIdentity<T>(String dependencyName) => "$dependencyName${T.hashCode.toString()}";
+  String _getIdentity<T>(String dependencyName) =>
+      "$dependencyName${T.hashCode.toString()}";
+}
+
+extension OldVersionExtension on Injector {
+  @Deprecated("Use instance<T>() instead")
+  T getDependency<T>({String dependencyName = ""}) =>
+      this.instance<T>(dependencyName: dependencyName);
+}
+
+extension RegisterExtension on Injector {
+  void registerSingleton<T>(
+    Builder<T> builder, {
+    bool override = false,
+    String dependencyName = "",
+  }) =>
+      this.register(Factory.singleton(builder),
+          override: override, dependencyName: dependencyName);
+
+  void registerDependency<T>(
+    Builder<T> builder, {
+    bool override = false,
+    String dependencyName = "",
+  }) =>
+      this.register(Factory.singleton(builder),
+          override: override, dependencyName: dependencyName);
 }
