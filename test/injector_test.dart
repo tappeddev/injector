@@ -1,5 +1,6 @@
 import 'package:injector/injector.dart';
 import 'package:injector/src/exception/circular_dependency_exception.dart';
+import 'package:injector/src/exception/not_defined_exception.dart';
 import 'package:test/test.dart';
 
 import 'test_classes.dart';
@@ -15,87 +16,78 @@ void main() {
 
   test('Register dependency / Get dependency - Test', () {
     injector.registerDependency<Fuel>(() => Fuel());
-
     injector.registerDependency<Driver>(() => Driver());
-
     injector.registerDependency<Engine>(() => Engine());
-
     injector.registerDependency<Car>(() {
-      final fuel = injector.instance<Fuel>();
-      final driver = injector.instance<Driver>();
-      final engine = injector.instance<Engine>();
+      final fuel = injector.get<Fuel>();
+      final driver = injector.get<Driver>();
+      final engine = injector.get<Engine>();
 
       return CarImpl(driver: driver, engine: engine, fuel: fuel);
     });
 
-    final car = injector.instance<Car>();
+    final car = injector.get<Car>();
 
     expect(car, isNotNull);
     expect(car.drive(), true);
     expect(car.stop(), true);
   });
 
-  test("Ecxeption - A not registered Dependency", () {
+  test("Exception - A not registered Dependency", () {
     try {
-      injector.instance<Fuel>();
+      injector.get<Fuel>();
     } on Exception catch (e) {
-      expect(e, const TypeMatcher<Exception>());
+      expect(e, const TypeMatcher<NotDefinedException>());
     }
   });
 
   test('Register singleton / Get singleton - Test', () {
     injector.registerSingleton<Fuel>(() => Fuel());
-
     injector.registerSingleton<Driver>(() => Driver());
-
     injector.registerSingleton<Engine>(() => Engine());
-
     injector.registerSingleton<Car>(() {
-      final fuel = injector.instance<Fuel>();
-      final driver = injector.instance<Driver>();
-      final engine = injector.instance<Engine>();
+      final fuel = injector.get<Fuel>();
+      final driver = injector.get<Driver>();
+      final engine = injector.get<Engine>();
       return CarImpl(driver: driver, engine: engine, fuel: fuel);
     });
 
-    final singleTonCar1 = injector.instance<Car>();
-
-    final singleTonCar2 = injector.instance<Car>();
+    final singleTonCar1 = injector.get<Car>();
+    final singleTonCar2 = injector.get<Car>();
 
     expect(singleTonCar1, equals(singleTonCar2));
   });
 
-  test('Register two classes with the same name from different packages - Test',
-      () {
+  test('Register two classes with the same name from different packages - Test', () {
     injector.registerDependency<Engine>(() => Engine());
-
     injector.registerDependency<test2.Engine>(() => test2.Engine());
 
-    final engine1 = injector.instance<Engine>();
-    final engine2 = injector.instance<test2.Engine>();
+    final engine1 = injector.get<Engine>();
+    final engine2 = injector.get<test2.Engine>();
 
     expect(engine1, isNot(engine2));
   });
 
-  test('Detects Cylce dependencies', () {
+  test('Detects circular dependencies', () {
     injector.registerDependency<Engine>(() => Engine());
 
     injector.registerDependency<Fuel>(() {
-      injector.instance<Engine>();
+      injector.get<Engine>();
 
       // this will trigger the cycle
       // since Fuel requires Driver and Driver requires Fuel
-      injector.instance<Driver>();
+      injector.get<Driver>();
       return Fuel();
     });
 
     injector.registerDependency<Driver>(() {
-      injector.instance<Engine>();
-      injector.instance<Fuel>();
+      injector.get<Engine>();
+      injector.get<Fuel>();
       return Driver();
     });
 
     try {
-      injector.instance<Fuel>();
+      injector.get<Fuel>();
     } on Exception catch (e) {
       expect(e, const TypeMatcher<CircularDependencyException>());
     }
@@ -105,10 +97,9 @@ void main() {
     const dependencyName = "RegisterWithName";
     final rawEngine = Engine();
 
-    injector.registerSingleton<Engine>(() => rawEngine,
-        dependencyName: dependencyName);
+    injector.registerSingleton<Engine>(() => rawEngine, dependencyName: dependencyName);
 
-    final engine = injector.instance<Engine>(dependencyName: dependencyName);
+    final engine = injector.get<Engine>(dependencyName: dependencyName);
 
     expect(engine == rawEngine, true);
   });
@@ -117,19 +108,17 @@ void main() {
     const dependencyName1 = "Dep1";
     const dependencyName2 = "Dep2";
 
-    injector.registerDependency<Engine>(() => Engine(),
-        dependencyName: dependencyName1);
-    injector.registerDependency<Engine>(() => Engine(),
-        dependencyName: dependencyName2);
+    injector.registerDependency<Engine>(() => Engine()..capacity = "1", dependencyName: dependencyName1);
+    injector.registerDependency<Engine>(() => Engine()..capacity = "2", dependencyName: dependencyName2);
 
-    final engine1 = injector.instance<Engine>(dependencyName: dependencyName1);
-    final engine2 = injector.instance<Engine>(dependencyName: dependencyName2);
+    final engine1 = injector.get<Engine>(dependencyName: dependencyName1);
+    final engine2 = injector.get<Engine>(dependencyName: dependencyName2);
 
-    expect(engine1, const TypeMatcher<Engine>());
-    expect(engine2, const TypeMatcher<Engine>());
+    expect(engine1.capacity, "1");
+    expect(engine2.capacity, "2");
   });
 
-  test("override a dependencies", () {
+  test("override a dependency", () {
     injector.registerDependency<Engine>(() => Engine()..capacity = "1");
 
     injector.registerDependency<Engine>(
@@ -137,7 +126,7 @@ void main() {
       override: true,
     );
 
-    final engine = injector.instance<Engine>();
+    final engine = injector.get<Engine>();
 
     expect(engine.capacity, "2");
   });
