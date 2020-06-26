@@ -119,6 +119,19 @@ void main() {
   });
 
   test("override a dependency", () {
+    injector.registerDependency<Engine>(() => Engine()..capacity = "1");
+
+    injector.registerDependency<Engine>(
+      () => Engine()..capacity = "2",
+      override: true,
+    );
+
+    final engine = injector.get<Engine>();
+
+    expect(engine.capacity, "2");
+  });
+
+  test("resets circular detection when get call fails", () {
     var didThrow = false;
 
     injector.registerDependency<Engine>(() {
@@ -142,17 +155,5 @@ void main() {
     final engine = injector.get<Engine>();
 
     expect(engine, isNotNull);
-  });
-
-  test("resets circular detection when get call fails", () {
-    injector.registerDependency<Engine>(() => Engine());
-    injector.registerDependency<Engine>(
-      () => Engine()..capacity = "2",
-      override: true,
-    );
-
-    final engine = injector.get<Engine>();
-
-    expect(engine.capacity, "2");
   });
 }
