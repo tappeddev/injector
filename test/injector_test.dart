@@ -119,8 +119,33 @@ void main() {
   });
 
   test("override a dependency", () {
-    injector.registerDependency<Engine>(() => Engine()..capacity = "1");
+    var didThrow = false;
 
+    injector.registerDependency<Engine>(() {
+      if (!didThrow) {
+        didThrow = true;
+        throw Exception("ups");
+      }
+      return Engine();
+    });
+
+    // This first call will throw an exception and therefore
+    // in that case we have to reset the called factories to ensure that
+    // our circular dependency injection will not be triggered in the second call.
+    try {
+      injector.get<Engine>();
+    } catch (e) {
+      assert(didThrow);
+    }
+
+    // If this call works, we are save ✅
+    final engine = injector.get<Engine>();
+
+    expect(engine, isNotNull);
+  });
+
+  test("resets circular detection when get call fails", () {
+    injector.registerDependency<Engine>(() => Engine());
     injector.registerDependency<Engine>(
       () => Engine()..capacity = "2",
       override: true,
