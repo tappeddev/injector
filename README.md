@@ -1,8 +1,7 @@
 # Injector 💉 [![Build Status](https://travis-ci.com/tikkrapp/injector.svg?branch=master)](https://travis-ci.com/tikkrapp/injector)
 
-Injector is a simple dependency injector for Dart.
+Injector is a simple dependency injection lib for Dart.
 
-We have been using this injector in all our projects for quite a while now.
 It does not replace a complex dependency injection framework like Dagger, but it provides the basics that most apps need.
 Feature requests are welcomed!
 
@@ -11,10 +10,9 @@ Internally the injector is a singleton that stores instances and builders in a M
 Use `registerDependency<Type>()` to register the dependency.
 Never ever try to register or get dependencies without the generic type! Dart allows it, but we don't ;)
 
-All instances are lazy loaded, meaning that at the time you request the dependency the instance is created.
-Therefore you are registering a builder function that hands you a injector that you HAVE TO USE when getting child dependencies.  
+All instances are lazy loaded, meaning that at the time you request the dependency the instance is created. 
     
-Get your dependency using `getDependency<Type>()`. 
+Get your dependency using `get<Type>()`. 
 
     
 
@@ -23,22 +21,25 @@ Get your dependency using `getDependency<Type>()`.
 A simple usage example:
 
     // Register a dependency (Every time a new instance)
-    injector.registerDependency<Car>((injector) {
-          var engine = injector.getDependency<Engine>();
-          var fuel = injector.getDependency<Fuel>();
-          var driver = injector.getDependency<Driver>();
+    injector.registerDependency<Car>(() {
+          var engine = injector.get<Engine>();
+          var fuel = injector.get<Fuel>();
+          var driver = injector.get<Driver>();
           
           return CarImpl(engine,fuel,driver);
         });
         
     // Register a singleton
-    injector.registerSingleton<Car>((injector) {
-              var engine = injector.getDependency<Engine>();
-              var fuel = injector.getDependency<Fuel>();
-              var driver = injector.getDependency<Driver>();
+    injector.registerSingleton<Car>(() {
+              var engine = injector.get<Engine>();
+              var fuel = injector.get<Fuel>();
+              var driver = injector.get<Driver>();
               
               return CarImpl(engine,fuel,driver);
             });
+            
+     // Use custom Factories by extending [Factory].
+     injector.register(CustomFactory(() => Engine()));
         
     // Register your dependencies / singletons in the  __main.dart__ file
 
@@ -56,4 +57,4 @@ import '../../some/package/<file_name>.dart';
 
 Please file feature requests and bugs at the [issue tracker][tracker].
 
-[tracker]: https://github.com/tikkrapp/injector/issues
+[tracker]: https://github.com/tappeddev/injector/issues

@@ -29,6 +29,7 @@ class CarImpl extends Car {
 
 abstract class Database {
   void add(String text);
+
   void remove(int id);
 }
 
@@ -56,30 +57,43 @@ class TikkrDatabase extends Database {
   }
 }
 
+class CustomFactory<T> extends Factory<T> {
+  CustomFactory(Builder<T> builder) : super(builder);
+
+  @override
+  T get instance {
+    //Use this.builder to create your instance with custom logic.
+    return builder();
+  }
+}
+
 void main() {
   // Use this static instance
-  Injector injector = Injector.appInstance;
+  final injector = Injector.appInstance;
 
-  //Register a dependency
-  injector.registerDependency<Engine>((_) => Engine());
+  // Register a dependency
+  injector.registerDependency<Engine>(() => Engine());
 
-  injector.registerDependency<Car>((Injector injector) {
-    var engine = injector.getDependency<Engine>();
+  injector.registerDependency<Car>(() {
+    final engine = injector.get<Engine>();
     return CarImpl(engine: engine);
   });
 
-  //Maybe you want to register a class and you need it as a singleton
-  injector.registerSingleton<Database>((_) => TikkrDatabase());
+  //Use custom Factories by extending [Factory]
+  injector.register(CustomFactory(() => Engine()));
+
+  // Maybe you want to register a class and you need it as a singleton
+  injector.registerSingleton<Database>(() => TikkrDatabase());
 }
 
-//Now you can easily get your dependencies / singletons with one line
+// Now you can easily get your dependencies / singletons with one line
 class WebView {
   Database database;
   Car customerCar;
 
   WebView() {
-    Injector injector = Injector.appInstance;
-    database = injector.getDependency<Database>();
-    customerCar = injector.getDependency<Car>();
+    final injector = Injector.appInstance;
+    database = injector.get<Database>();
+    customerCar = injector.get<Car>();
   }
 }
