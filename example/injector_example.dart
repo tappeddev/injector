@@ -69,7 +69,7 @@ void main() {
     return CarImpl(engine: engine);
   });
 
-  //Maybe you want to register a class and you need it as a singleton
+  // Maybe you want to register a class and you need it as a singleton
   injector.registerSingleton<Database>(() => TikkrDatabase());
 }
 
