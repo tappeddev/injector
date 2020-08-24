@@ -58,6 +58,20 @@ void main() {
     expect(singleTonCar1, equals(singleTonCar2));
   });
 
+  test('Register dependency calls factory function multiple times', () {
+    var counter = 0;
+    injector
+      ..registerDependency<Fuel>(() {
+        counter++;
+        return Fuel();
+      })
+      ..get<Fuel>()
+      ..get<Fuel>()
+      ..get<Fuel>();
+
+    expect(counter, 3);
+  });
+
   test('Register two classes with the same name from different packages - Test', () {
     injector.registerDependency<Engine>(() => Engine());
     injector.registerDependency<test2.Engine>(() => test2.Engine());

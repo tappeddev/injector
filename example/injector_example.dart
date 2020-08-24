@@ -57,6 +57,17 @@ class TikkrDatabase extends Database {
   }
 }
 
+class CustomFactory<T> extends Factory<T> {
+  CustomFactory(Builder<T> builder) : super(builder);
+
+  @override
+  T get instance {
+    //Use this.builder to create your instance with custom logic.
+    //TODO add custom logic
+    return builder();
+  }
+}
+
 void main() {
   // Use this static instance
   final injector = Injector.appInstance;
@@ -65,9 +76,12 @@ void main() {
   injector.registerDependency<Engine>(() => Engine());
 
   injector.registerDependency<Car>(() {
-    final engine = injector.getDependency<Engine>();
+    final engine = injector.get<Engine>();
     return CarImpl(engine: engine);
   });
+
+  //Use custom Factories by extending [Factory]
+  injector.register(CustomFactory(() => Engine()));
 
   // Maybe you want to register a class and you need it as a singleton
   injector.registerSingleton<Database>(() => TikkrDatabase());
@@ -80,7 +94,7 @@ class WebView {
 
   WebView() {
     final injector = Injector.appInstance;
-    database = injector.getDependency<Database>();
-    customerCar = injector.getDependency<Car>();
+    database = injector.get<Database>();
+    customerCar = injector.get<Car>();
   }
 }

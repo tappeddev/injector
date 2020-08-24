@@ -52,6 +52,22 @@ class Injector {
     _factoryMap[identity] = factory;
   }
 
+  /// Registers the [builder] with a [Factory.singleton] factory.
+  void registerSingleton<T>(
+    Builder<T> builder, {
+    bool override = false,
+    String dependencyName = "",
+  }) =>
+      this.register(Factory.singleton(builder), override: override, dependencyName: dependencyName);
+
+  /// Registers the [builder] with a [Factory.provider] factory.
+  void registerDependency<T>(
+    Builder<T> builder, {
+    bool override = false,
+    String dependencyName = "",
+  }) =>
+      this.register(Factory.provider(builder), override: override, dependencyName: dependencyName);
+
   /// Whenever a factory is called to get a dependency
   /// the identifier of that factory is saved to this list and
   /// is removed when the instance is successfully created.
