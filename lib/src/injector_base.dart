@@ -87,10 +87,17 @@ class Injector {
 
     _factoryCallIds.add(factoryId);
 
-    final instance = factory.instance as T;
-    _factoryCallIds.remove(factoryId);
-
-    return instance;
+    try {
+      final instance = factory.instance as T;
+      _factoryCallIds.remove(factoryId);
+      return instance;
+    } catch (e) {
+      // In case something went wrong, we have to clear the called factory list
+      // because this will trigger a [CircularDependencyException] the next time
+      // this factory is called again.
+      _factoryCallIds.clear();
+      rethrow;
+    }
   }
 
   /// Shorter syntax for [get].
