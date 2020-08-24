@@ -1,6 +1,6 @@
 import '../../injector.dart';
 
-/// Extensions that guarantee compatibility to with code written with
+/// Extensions that guarantee compatibility to code written with
 /// previous versions of Injector to ensure that the following updates
 /// don't break existing code.
 extension CompatibilityExtension on Injector {
