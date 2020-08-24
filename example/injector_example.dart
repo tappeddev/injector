@@ -61,7 +61,7 @@ void main() {
   // Use this static instance
   final injector = Injector.appInstance;
 
-  //Register a dependency
+  // Register a dependency
   injector.registerDependency<Engine>(() => Engine());
 
   injector.registerDependency<Car>(() {
