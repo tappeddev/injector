@@ -1,7 +1,7 @@
 import '../../injector.dart';
 
 /// Extensions that guarantee compatibility to with code written with
-/// previous version of the injector to ensure that the following updates
+/// previous versions of Injector to ensure that the following updates
 /// don't break existing code.
 extension CompatibilityExtension on Injector {
   @Deprecated("Use get<T>() instead")
