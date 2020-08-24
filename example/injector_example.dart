@@ -73,7 +73,7 @@ void main() {
   injector.registerSingleton<Database>(() => TikkrDatabase());
 }
 
-//Now you can easily get your dependencies / singletons with one line
+// Now you can easily get your dependencies / singletons with one line
 class WebView {
   Database database;
   Car customerCar;
