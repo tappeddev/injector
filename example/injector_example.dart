@@ -63,7 +63,6 @@ class CustomFactory<T> extends Factory<T> {
   @override
   T get instance {
     //Use this.builder to create your instance with custom logic.
-    //TODO add custom logic
     return builder();
   }
 }
