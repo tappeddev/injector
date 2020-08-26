@@ -1,3 +1,11 @@
+## 1.0.9
+- Add `get` as shortcut for `getDependency`
+- Add deprecated annotation to `getDependency`
+- Some preparations for nullability
+- [bug] Fixed the bug, that the library detects a wrong circular dependency ([#25][i25])
+
+[i25]: https://github.com/tappeddev/injector/issues/25
+
 ## 1.0.8
 - Add travis ci badge to readme
 - Reformat using dartfmt
