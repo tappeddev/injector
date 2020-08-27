@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 /// Gets thrown when trying to get a dependency that has not been registered yet.
 ///
 /// Some checkpoints that could cause this issue:
@@ -14,7 +12,7 @@ class NotDefinedException implements Exception {
   // The Type of the missing instance
   String type;
 
-  NotDefinedException({@required this.type});
+  NotDefinedException({required this.type});
 
   @override
   String toString() => "The type \"$type\" is not defined!";

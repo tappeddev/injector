@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 class Engine {
   String capacity = "";
 }
@@ -14,6 +12,7 @@ class Driver {
 
 abstract class Car {
   bool drive();
+
   bool stop();
 }
 
@@ -22,7 +21,7 @@ class CarImpl extends Car {
   final Fuel fuel;
   final Driver driver;
 
-  CarImpl({@required this.engine, @required this.fuel, @required this.driver});
+  CarImpl({required this.engine, required this.fuel, required this.driver});
 
   @override
   bool drive() {

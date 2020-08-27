@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 /// Gets thrown when trying to register dependencies that depends on each other
 /// in a circular way.
 ///
@@ -9,7 +7,7 @@ import 'package:meta/meta.dart';
 class CircularDependencyException implements Exception {
   String type;
 
-  CircularDependencyException({@required this.type});
+  CircularDependencyException({required this.type});
 
   @override
   String toString() =>

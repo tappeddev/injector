@@ -22,8 +22,11 @@ abstract class Factory<T> {
 
   T get instance;
 
-  static Factory<T> provider<T>(Builder<T> builder) => _ProviderFactory(builder);
-  static Factory<T> singleton<T>(Builder<T> builder) => _SingletonFactory(builder);
+  static Factory<T> provider<T>(Builder<T> builder) =>
+      _ProviderFactory(builder);
+
+  static Factory<T> singleton<T>(Builder<T> builder) =>
+      _SingletonFactory(builder);
 }
 
 /// This Factory does lazy instantiation of [T] and
@@ -44,7 +47,7 @@ class _SingletonFactory<T> implements Factory<T> {
   @override
   Builder<T> builder;
 
-  T _value;
+  T? _value;
 
   _SingletonFactory(this.builder);
 

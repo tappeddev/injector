@@ -1,5 +1,4 @@
 import 'package:injector/injector.dart';
-import 'package:meta/meta.dart';
 
 class Engine {
   String capacity = "";
@@ -14,7 +13,7 @@ abstract class Car {
 class CarImpl extends Car {
   final Engine engine;
 
-  CarImpl({@required this.engine});
+  CarImpl({required this.engine});
 
   @override
   bool drive() {
@@ -88,8 +87,8 @@ void main() {
 
 // Now you can easily get your dependencies / singletons with one line
 class WebView {
-  Database database;
-  Car customerCar;
+  late final Database database;
+  late final Car customerCar;
 
   WebView() {
     final injector = Injector.appInstance;

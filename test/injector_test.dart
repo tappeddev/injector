@@ -7,10 +7,9 @@ import 'test_classes.dart';
 import 'test_classes_2.dart' as test2;
 
 void main() {
-  Injector injector;
+  final Injector injector = Injector.appInstance;
 
   setUp(() {
-    injector = Injector.appInstance;
     injector.clearAll();
   });
 
@@ -72,7 +71,8 @@ void main() {
     expect(counter, 3);
   });
 
-  test('Register two classes with the same name from different packages - Test', () {
+  test('Register two classes with the same name from different packages - Test',
+      () {
     injector.registerDependency<Engine>(() => Engine());
     injector.registerDependency<test2.Engine>(() => test2.Engine());
 
@@ -111,7 +111,8 @@ void main() {
     const dependencyName = "RegisterWithName";
     final rawEngine = Engine();
 
-    injector.registerSingleton<Engine>(() => rawEngine, dependencyName: dependencyName);
+    injector.registerSingleton<Engine>(() => rawEngine,
+        dependencyName: dependencyName);
 
     final engine = injector.get<Engine>(dependencyName: dependencyName);
 
@@ -122,8 +123,10 @@ void main() {
     const dependencyName1 = "Dep1";
     const dependencyName2 = "Dep2";
 
-    injector.registerDependency<Engine>(() => Engine()..capacity = "1", dependencyName: dependencyName1);
-    injector.registerDependency<Engine>(() => Engine()..capacity = "2", dependencyName: dependencyName2);
+    injector.registerDependency<Engine>(() => Engine()..capacity = "1",
+        dependencyName: dependencyName1);
+    injector.registerDependency<Engine>(() => Engine()..capacity = "2",
+        dependencyName: dependencyName2);
 
     final engine1 = injector.get<Engine>(dependencyName: dependencyName1);
     final engine2 = injector.get<Engine>(dependencyName: dependencyName2);
