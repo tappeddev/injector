@@ -69,13 +69,13 @@ class Injector {
       this.register(Factory.provider(builder), override: override, dependencyName: dependencyName);
 
   /// Whenever a factory is called to get a dependency
-  /// the identifier of that factory is saved to this list and
+  /// the identifier of that factory is saved to this set and
   /// is removed when the instance is successfully created.
   ///
   /// A circular dependency is detected when the factory id was not removed
   /// meaning that the instance was not created
   /// but the same factory was called more than once
-  final _factoryCallIds = <int>[];
+  final _factoryCallIds = <int>{};
 
   /// Returns the registered dependencies with the signature of [T] and
   /// the optional [dependencyName].
@@ -97,11 +97,10 @@ class Injector {
     final factory = _factoryMap[identity];
     final factoryId = factory.hashCode;
 
-    if (_factoryCallIds.contains(factoryId)) {
+    final unique = _factoryCallIds.add(factoryId);
+    if (!unique) {
       throw CircularDependencyException(type: T.toString());
     }
-
-    _factoryCallIds.add(factoryId);
 
     try {
       final instance = factory.instance as T;
