@@ -55,7 +55,7 @@ void main() {
     final singleTonCar1 = injector.get<Car>();
     final singleTonCar2 = injector.get<Car>();
 
-    expect(singleTonCar1, equals(singleTonCar2));
+    expect(singleTonCar1, same(singleTonCar2));
   });
 
   test('Register dependency calls factory function multiple times', () {
