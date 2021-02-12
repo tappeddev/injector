@@ -22,8 +22,10 @@ abstract class Factory<T> {
 
   T get instance;
 
-  static Factory<T> provider<T>(Builder<T> builder) => _ProviderFactory(builder);
-  static Factory<T> singleton<T>(Builder<T> builder) => _SingletonFactory(builder);
+  static Factory<T> provider<T>(Builder<T> builder) =>
+      _ProviderFactory(builder);
+  static Factory<T> singleton<T>(Builder<T> builder, bool lazyLoad) =>
+      _SingletonFactory(builder, lazyLoad);
 }
 
 /// This Factory does lazy instantiation of [T] and
@@ -43,10 +45,15 @@ class _ProviderFactory<T> implements Factory<T> {
 class _SingletonFactory<T> implements Factory<T> {
   @override
   Builder<T> builder;
+  bool lazyLoad;
 
   T _value;
 
-  _SingletonFactory(this.builder);
+  _SingletonFactory(this.builder, this.lazyLoad) {
+    if (!lazyLoad) {
+      _value = builder();
+    }
+  }
 
   @override
   T get instance => _value ??= builder();

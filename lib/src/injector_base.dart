@@ -40,7 +40,8 @@ class Injector {
   /// ```dart
   /// injector.get<UserService>();
   /// ```
-  void register<T>(Factory<T> factory, {bool override = false, String dependencyName = ""}) {
+  void register<T>(Factory<T> factory,
+      {bool override = false, String dependencyName = ""}) {
     _checkValidation<T>();
 
     final identity = _getIdentity<T>(dependencyName);
@@ -55,10 +56,12 @@ class Injector {
   /// Registers the [builder] with a [Factory.singleton] factory.
   void registerSingleton<T>(
     Builder<T> builder, {
+    bool lazyLoad = true,
     bool override = false,
     String dependencyName = "",
   }) =>
-      this.register(Factory.singleton(builder), override: override, dependencyName: dependencyName);
+      this.register(Factory.singleton(builder, lazyLoad),
+          override: override, dependencyName: dependencyName);
 
   /// Registers the [builder] with a [Factory.provider] factory.
   void registerDependency<T>(
@@ -66,7 +69,8 @@ class Injector {
     bool override = false,
     String dependencyName = "",
   }) =>
-      this.register(Factory.provider(builder), override: override, dependencyName: dependencyName);
+      this.register(Factory.provider(builder),
+          override: override, dependencyName: dependencyName);
 
   /// Whenever a factory is called to get a dependency
   /// the identifier of that factory is saved to this list and
@@ -117,7 +121,8 @@ class Injector {
   }
 
   /// Shorter syntax for [get].
-  T call<T>({String dependencyName = ""}) => this.get<T>(dependencyName: dependencyName);
+  T call<T>({String dependencyName = ""}) =>
+      this.get<T>(dependencyName: dependencyName);
 
   /// Checks if the dependency with the signature of [T] and [dependency] exists.
   bool exists<T>({String dependencyName = ""}) {
@@ -162,5 +167,6 @@ class Injector {
     }
   }
 
-  String _getIdentity<T>(String dependencyName) => "$dependencyName${T.hashCode.toString()}";
+  String _getIdentity<T>(String dependencyName) =>
+      "$dependencyName${T.hashCode.toString()}";
 }
