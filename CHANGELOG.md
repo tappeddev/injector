@@ -1,3 +1,7 @@
+# 2.0.0
+- Stable release for null safety
+
+
 ## 1.0.9
 - Add `get` as shortcut for `getDependency`
 - Add deprecated annotation to `getDependency`
