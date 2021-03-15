@@ -1,11 +1,12 @@
 name: injector
 description: injector is a simple to use and lightweight dependency injection library for dart
-version: 1.0.10-nullsafety.0
+version: 2.0.0
 homepage: https://github.com/tappeddev/injector
 
 environment:
-  sdk: '>=2.10.0-0 <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 dev_dependencies:
+  extra_pedantic: ^1.3.0
   test: ^1.15.3
-  extra_pedantic: 1.2.0
+

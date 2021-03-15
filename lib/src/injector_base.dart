@@ -1,7 +1,7 @@
-import 'package:injector/src/exception/already_defined_exception.dart';
-import 'package:injector/src/exception/circular_dependency_exception.dart';
-import 'package:injector/src/exception/not_defined_exception.dart';
-import 'package:injector/src/factory/factory.dart';
+import 'exception/already_defined_exception.dart';
+import 'exception/circular_dependency_exception.dart';
+import 'exception/not_defined_exception.dart';
+import 'factory/factory.dart';
 
 class Injector {
   /// The static/single instance of the [Injector].

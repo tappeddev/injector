@@ -1,4 +1,4 @@
-import 'package:injector/src/injector_base.dart';
+import '../injector_base.dart';
 
 /// Extensions that guarantee compatibility to code written with
 /// previous versions of Injector to ensure that the following updates
