@@ -7,7 +7,7 @@
 /// Injector().registerDependency<InterfaceClass>((_) => SecondImplementation());
 /// ```
 class AlreadyDefinedException implements Exception {
-  // The Type of the already defined instance
+  /// The Type of the already defined instance.
   String type;
 
   AlreadyDefinedException({required this.type});

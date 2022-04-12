@@ -7,8 +7,7 @@ class Injector {
   /// The static/single instance of the [Injector].
   static final Injector appInstance = Injector();
 
-  /// Stores [SingletonFactory] and [ProviderFactory] instances that have been
-  /// registered by [registerSingleton] and [registerDependency] respectively.
+  /// Stores the all registered [Factory].
   final _factoryMap = <String, Factory<dynamic>>{};
 
   /// Registers a dependency that will be created with the provided [Factory].
@@ -24,14 +23,14 @@ class Injector {
   ///
   /// ```dart
   /// abstract class UserService {
-  ///  void login(String username, String password);
+  ///   void login(String username, String password);
   /// }
   ///
   /// class UserServiceImpl implements UserService {
-  ///  void login(String username, String password) {
-  ///    .....
-  ///    .....
-  ///  }
+  ///   void login(String username, String password) {
+  ///     .....
+  ///     .....
+  ///   }
   /// }
   ///
   /// injector.register(Factory.singleton(() => UserServiceImpl()));

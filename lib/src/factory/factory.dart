@@ -1,4 +1,4 @@
-/// Gets registered at the injector an then gets called by the injector to
+/// Gets registered at the injector and then gets called by the injector to
 /// instantiate the dependency and all of its dependencies.
 ///
 ///
