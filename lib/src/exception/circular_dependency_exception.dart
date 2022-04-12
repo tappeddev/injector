@@ -5,7 +5,7 @@
 /// * A chicken depends on an egg.
 /// * An egg depends on a chicken.
 class CircularDependencyException implements Exception {
-  /// The Type of dependency that caused the circular dependency.
+  /// The Type of the dependency that caused the circular dependency.
   String type;
 
   CircularDependencyException({required this.type});
