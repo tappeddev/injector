@@ -9,7 +9,7 @@
 ///   ```
 /// * The dependency has not been registered at all
 class NotDefinedException implements Exception {
-  // The Type of the missing instance
+  /// The Type of the missing instance.
   String type;
 
   NotDefinedException({required this.type});
