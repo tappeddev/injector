@@ -57,7 +57,7 @@ class TikkrDatabase extends Database {
 }
 
 class CustomFactory<T> extends Factory<T> {
-  CustomFactory(Builder<T> builder) : super(builder);
+  CustomFactory(DependencyBuilder<T> builder) : super(builder);
 
   @override
   T get instance {

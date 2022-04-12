@@ -55,7 +55,7 @@ class Injector {
 
   /// Registers the [builder] with a [Factory.singleton] factory.
   void registerSingleton<T>(
-    Builder<T> builder, {
+    DependencyBuilder<T> builder, {
     bool override = false,
     String dependencyName = "",
   }) =>
@@ -64,7 +64,7 @@ class Injector {
 
   /// Registers the [builder] with a [Factory.provider] factory.
   void registerDependency<T>(
-    Builder<T> builder, {
+    DependencyBuilder<T> builder, {
     bool override = false,
     String dependencyName = "",
   }) =>
