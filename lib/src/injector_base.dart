@@ -109,6 +109,7 @@ class Injector {
       final instance = factory.instance as T;
       _factoryCallIds.remove(factoryId);
       return instance;
+      // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       // In case something went wrong, we have to clear the called factory list
       // because this will trigger a [CircularDependencyException] the next time
@@ -122,7 +123,7 @@ class Injector {
   T call<T>({String dependencyName = ""}) =>
       this.get<T>(dependencyName: dependencyName);
 
-  /// Checks if the dependency with the signature of [T] and [dependency] exists.
+  /// Checks if the dependency with the signature of [T] and [dependencyName] exists.
   bool exists<T>({String dependencyName = ""}) {
     _checkValidation<T>();
 
@@ -166,5 +167,5 @@ class Injector {
   }
 
   String _getIdentity<T>(String dependencyName) =>
-      "$dependencyName${T.hashCode.toString()}";
+      "$dependencyName${T.hashCode}";
 }

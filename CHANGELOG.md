@@ -1,3 +1,6 @@
+# 3.0.0
+- Rename `Builder` to `DependencyBuilder` by [saibotma](https://github.com/tappeddev/injector/pull/37)
+
 # 2.0.0
 - Stable release for null safety
 
