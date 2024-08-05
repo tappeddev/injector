@@ -1,3 +1,6 @@
+# 4.0.0
+- Removed deprecated function `getDependency`. Use `get` instead
+
 # 3.0.0
 - Rename `Builder` to `DependencyBuilder` by [saibotma](https://github.com/tappeddev/injector/pull/37)
 
